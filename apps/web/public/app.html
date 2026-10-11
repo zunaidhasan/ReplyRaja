@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ReplyRaja — Merchant Dashboard & Omnichannel Inbox</title>
+  <link rel="icon" type="image/png" href="/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Inter', 'Hind Siliguri', sans-serif; }
+    .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 h-screen flex overflow-hidden">
+
+  <!-- Left Global Sidebar -->
+  <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col justify-between border-r border-slate-800 flex-shrink-0">
+    <div>
+      <!-- Workspace Brand Header -->
+      <div class="p-4 border-b border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <img src="/logo.png" alt="ReplyRaja Logo" class="w-10 h-10 object-contain rounded-xl bg-white p-0.5 shadow" />
+          <div>
+            <div class="font-bold text-white text-sm" id="nav-brand-name">ReplyRaja</div>
+            <div class="text-[11px] text-slate-400">Aariz Fashion Dhaka</div>
+          </div>
+        </div>
+        <span class="w-2.5 h-2.5 rounded-full bg-green-500" title="Connected"></span>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="p-3 space-y-1 text-sm font-medium">
+        <button onclick="switchTab('inbox')" id="tab-btn-inbox" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-blue-600 text-white font-semibold transition">
+          <div class="flex items-center gap-3">
+            <span>📥</span>
+            <span>ইউনিফাইড ইনবক্স</span>
+          </div>
+          <span id="unread-badge" class="bg-blue-800 text-xs px-2 py-0.5 rounded-full font-bold">2</span>
+        </button>
+
+        <button onclick="switchTab('orders')" id="tab-btn-orders" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800 text-slate-300 transition">
+          <span>📦</span>
+          <span>অর্ডার ও কুরিয়ার</span>
+        </button>
+
+        <button onclick="switchTab('crm')" id="tab-btn-crm" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800 text-slate-300 transition">
+          <span>👥</span>
+          <span>কাস্টমার ও CRM</span>
+        </button>
+
+        <button onclick="switchTab('knowledge')" id="tab-btn-knowledge" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800 text-slate-300 transition">
+          <span>📚</span>
+          <span>নলেজ ও ক্যাটালগ RAG</span>
+        </button>
+
+        <button onclick="switchTab('analytics')" id="tab-btn-analytics" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800 text-slate-300 transition">
+          <span>📊</span>
+          <span>অ্যানালিটিক্স ও ROI</span>
+        </button>
+
+        <button onclick="switchTab('settings')" id="tab-btn-settings" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800 text-slate-300 transition">
+          <span>⚙️</span>
+          <span>AI মোড ও সেটিংস</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- User / Onboarding Info Footer -->
+    <div class="p-4 border-t border-slate-800 text-xs text-slate-400 space-y-2">
+      <div class="flex items-center justify-between">
+        <span>AI মোড:</span>
+        <span id="sidebar-reply-mode" class="text-blue-400 font-bold uppercase tracking-wider bg-slate-800 px-2 py-0.5 rounded">Draft Only</span>
+      </div>
+      <div class="flex items-center justify-between">
+        <span>লগইন:</span>
+        <span class="text-slate-300 font-medium">Zunaid (Owner)</span>
+      </div>
+      <a href="/" class="block text-center mt-2 pt-2 border-t border-slate-800 text-slate-500 hover:text-white transition">
+        ← ল্যান্ডিং পেইজে যান
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main View Container -->
+  <main class="flex-1 flex flex-col h-full overflow-hidden bg-white">
+    
+    <!-- TOP APP BAR -->
+    <header class="h-14 border-b border-slate-200 bg-white px-6 flex items-center justify-between flex-shrink-0">
+      <div class="flex items-center gap-3">
+        <h1 id="view-title" class="text-base font-bold text-slate-800">অমনিচ্যানেল ইনবক্স (Omnichannel Inbox)</h1>
+        <span id="active-channel-pill" class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md font-medium border border-slate-200">সকল চ্যানেল</span>
+      </div>
+      
+      <div class="flex items-center gap-3">
+        <!-- Theme Toggle -->
+        <button onclick="toggleAppTheme()" id="app-theme-btn" class="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 transition" title="Toggle Theme">
+          <span id="app-theme-icon">🌙</span>
+        </button>
+
+        <!-- Language Switcher -->
+        <button onclick="toggleAppLang()" id="app-lang-btn" class="px-2.5 py-1 text-xs font-bold border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-100 transition flex items-center gap-1">
+          <span>🌐</span>
+          <span id="app-lang-label">বাংলা</span>
+        </button>
+
+        <span class="text-xs text-slate-400">|</span>
+        <button onclick="simulateIncomingMessage()" class="px-3 py-1.5 bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-bold rounded-lg hover:bg-indigo-100 transition flex items-center gap-1">
+          <span>⚡ টেস্ট মেসেজ পাঠান</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- TAB 1: OMNICHANNEL INBOX (3-PANE LAYOUT) -->
+    <div id="tab-inbox" class="flex-1 flex overflow-hidden">
+      
+      <!-- Thread List (Left Pane) -->
+      <div class="w-80 border-r border-slate-200 flex flex-col bg-slate-50 flex-shrink-0">
+        <!-- Filter bar -->
+        <div class="p-3 border-b border-slate-200 space-y-2">
+          <input type="text" id="conv-search" placeholder="কাস্টমার নাম বা নম্বর খুঁজুন..." oninput="filterConversations()" class="w-full text-xs px-3 py-2 rounded-lg border border-slate-300 bg-white focus:outline-blue-500" />
+          <div class="flex gap-1">
+            <button onclick="filterByChannel('all')" class="channel-filter-btn flex-1 py-1 text-[11px] font-bold rounded bg-blue-600 text-white">সব</button>
+            <button onclick="filterByChannel('facebook')" class="channel-filter-btn flex-1 py-1 text-[11px] font-medium rounded bg-white text-slate-600 border border-slate-200">FB</button>
+            <button onclick="filterByChannel('whatsapp')" class="channel-filter-btn flex-1 py-1 text-[11px] font-medium rounded bg-white text-slate-600 border border-slate-200">WA</button>
+            <button onclick="filterByChannel('instagram')" class="channel-filter-btn flex-1 py-1 text-[11px] font-medium rounded bg-white text-slate-600 border border-slate-200">IG</button>
+          </div>
+        </div>
+
+        <!-- Threads Container -->
+        <div id="thread-list" class="flex-1 overflow-y-auto custom-scrollbar divide-y divide-slate-200">
+          <!-- Dynamic thread items -->
+        </div>
+      </div>
+
+      <!-- Active Conversation View (Center Pane) -->
+      <div class="flex-1 flex flex-col bg-white overflow-hidden">
+        
+        <!-- Conversation Thread Header -->
+        <div class="p-4 border-b border-slate-200 flex items-center justify-between bg-white flex-shrink-0">
+          <div class="flex items-center gap-3">
+            <div id="active-avatar" class="w-10 h-10 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center text-sm">
+              RU
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <span id="active-cust-name" class="font-bold text-slate-900 text-sm">Rahim Uddin</span>
+                <span id="active-channel-badge" class="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-800">Facebook</span>
+                <span id="active-status-badge" class="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-800">Pending Approval</span>
+              </div>
+              <div id="active-cust-meta" class="text-xs text-slate-500 mt-0.5">01712345678 • ধানমন্ডি, ঢাকা</div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button onclick="escalateCurrentChat()" class="px-3 py-1.5 text-xs font-semibold text-red-600 bg-red-50 hover:bg-red-100 rounded-lg border border-red-200 transition">
+              🚨 এস্কেলেট
+            </button>
+            <button onclick="markResolved()" class="px-3 py-1.5 text-xs font-semibold text-green-700 bg-green-50 hover:bg-green-100 rounded-lg border border-green-200 transition">
+              ✓ সম্পন্ন (Resolve)
+            </button>
+          </div>
+        </div>
+
+        <!-- Message Thread Messages Window -->
+        <div id="message-container" class="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50/50 custom-scrollbar">
+          <!-- Dynamic messages -->
+        </div>
+
+        <!-- AI Draft Review Box (If pending draft exists) -->
+        <div id="ai-draft-review-box" class="p-4 bg-blue-50 border-t border-b border-blue-200 flex-shrink-0">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2 text-xs font-bold text-blue-900">
+              <span>✨ AI প্রস্তাবিত উত্তর (বাংলা ড্রাফট)</span>
+              <span id="draft-confidence" class="bg-blue-200 text-blue-800 px-2 py-0.5 rounded text-[10px]">কনফিডেন্স: ৯৬%</span>
+            </div>
+            <span class="text-[11px] text-blue-700 font-medium">হিউম্যান অ্যাপ্রুভাল প্রয়োজন</span>
+          </div>
+
+          <textarea id="draft-textarea" rows="3" class="w-full text-xs sm:text-sm p-3 border border-blue-300 rounded-xl bg-white text-slate-800 focus:outline-blue-600"></textarea>
+
+          <div class="flex items-center justify-between mt-2.5">
+            <div class="text-[11px] text-slate-500" id="draft-reason">
+              উৎস: PNJ-NAVY-01 ক্যাটালগ ও ডেলিভারি পলিসি
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="regenerateAIDraft()" class="px-3 py-1.5 bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 text-xs font-bold rounded-lg transition">
+                🔄 রি-জেনারেট
+              </button>
+              <button onclick="approveAIDraft()" class="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg transition shadow-md shadow-blue-500/20 flex items-center gap-1.5">
+                <span>✓ অ্যাপ্রুভ ও সেন্ড করুন</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Regular Human Message Input Bar -->
+        <div class="p-3 bg-white border-t border-slate-200 flex items-center gap-2 flex-shrink-0">
+          <input type="text" id="manual-msg-input" placeholder="কাস্টমারকে সরাসরি মেসেজ লিখুন (অথবা উপরে AI ড্রাফট অ্যাপ্রুভ করুন)..." onkeypress="if(event.key === 'Enter') sendManualMessage()" class="flex-1 text-xs sm:text-sm px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-blue-600" />
+          <button onclick="sendManualMessage()" class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-bold rounded-xl transition">
+            পাঠান
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Right Customer Context & Order Sidebar (Right Pane) -->
+      <div class="w-80 border-l border-slate-200 bg-white p-5 overflow-y-auto custom-scrollbar flex-shrink-0">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-500">কাস্টমার ও অর্ডার কনটেক্সট</span>
+          <span id="lead-stage-badge" class="text-xs bg-indigo-50 text-indigo-700 font-bold px-2 py-0.5 rounded border border-indigo-200">Price Sent</span>
+        </div>
+
+        <!-- Customer Summary -->
+        <div class="my-4 space-y-2 text-xs">
+          <div class="flex justify-between">
+            <span class="text-slate-500">নাম:</span>
+            <span id="side-cust-name" class="font-bold text-slate-800">Rahim Uddin</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500">ফোন:</span>
+            <span id="side-cust-phone" class="font-semibold text-slate-800">01712345678</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500">ঠিকানা:</span>
+            <span id="side-cust-addr" class="text-right text-slate-700 max-w-[150px]">House 12, Road 4, Dhanmondi</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500">মোট সম্পন্ন অর্ডার:</span>
+            <span id="side-cust-orders" class="font-bold text-slate-800">১টি (৳১,৯২০)</span>
+          </div>
+        </div>
+
+        <!-- Quick 1-Click Order Form -->
+        <div class="mt-6 pt-4 border-t border-slate-200">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-bold text-slate-900">📦 ১-ক্লিকে অর্ডার ক্যাপচার</span>
+            <span class="text-[10px] bg-green-100 text-green-800 font-bold px-1.5 py-0.5 rounded">Ready</span>
+          </div>
+
+          <form id="quick-order-form" onsubmit="handleCreateOrder(event)" class="space-y-3 text-xs">
+            <div>
+              <label class="block text-slate-500 mb-1">প্রোডাক্ট সিলেক্ট করুন:</label>
+              <select id="ord-product-select" class="w-full p-2 border border-slate-300 rounded-lg bg-white">
+                <option value="prd_1">প্রিমিয়াম লিনেন পাঞ্জাবি (Navy XL) - ৳1850</option>
+                <option value="prd_2">ঐতিহ্যবাহী তাঁতের সুতি শাড়ি - ৳1450</option>
+                <option value="prd_3">মেনস স্লিম ফিট চিনো প্যান্ট - ৳1100</option>
+                <option value="prd_4">আসল চামড়ার ওয়ালেট ও বেল্ট কম্বো - ৳1650</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-slate-500 mb-1">ডেলিভারি এলাকা:</label>
+              <select id="ord-area-select" onchange="updateDeliveryCharge()" class="w-full p-2 border border-slate-300 rounded-lg bg-white">
+                <option value="Inside Dhaka" selected>ঢাকার ভেতরে (চার্জ ৳৭০)</option>
+                <option value="Outside Dhaka">ঢাকার বাইরে (চার্জ ৳১৩০)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-slate-500 mb-1">পেমেন্ট মেথড:</label>
+              <select id="ord-payment-select" class="w-full p-2 border border-slate-300 rounded-lg bg-white">
+                <option value="cod">ক্যাশ অন ডেলিভারি (COD)</option>
+                <option value="bkash">বিকাশ (bKash)</option>
+                <option value="nagad">নগদ (Nagad)</option>
+              </select>
+            </div>
+
+            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+              <div class="flex justify-between text-slate-600">
+                <span>প্রোডাক্ট মূল্য:</span>
+                <span id="ord-subtotal">৳ ১,৮৫০</span>
+              </div>
+              <div class="flex justify-between text-slate-600">
+                <span>ডেলিভারি চার্জ:</span>
+                <span id="ord-charge">৳ ৭০</span>
+              </div>
+              <div class="flex justify-between font-bold text-slate-900 border-t border-slate-200 pt-1">
+                <span>সর্বমোট:</span>
+                <span id="ord-total" class="text-green-600 font-extrabold text-sm">৳ ১,৯২০</span>
+              </div>
+            </div>
+
+            <button type="submit" class="w-full py-2.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition shadow-md shadow-green-600/20 text-xs">
+              ✓ অর্ডার কনফার্ম ও ইনভয়েস তৈরি
+            </button>
+          </form>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- TAB 2: ORDERS & COURIER WORKFLOW -->
+    <div id="tab-orders" class="hidden flex-1 p-6 overflow-y-auto custom-scrollbar">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="text-xl font-bold text-slate-900">অর্ডার ও কুরিয়ার ট্র্যাকিং ড্যাশবোর্ড</h2>
+          <p class="text-xs text-slate-500">চ্যাট থেকে সরাসরি তৈরি হওয়া সকল অর্ডার এবং রেডএক্স/স্টিডফাস্ট পার্সেল স্ট্যাটাস</p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 uppercase font-semibold">
+            <tr>
+              <th class="p-3.5">অর্ডার আইডি</th>
+              <th class="p-3.5">কাস্টমার ও ফোন</th>
+              <th class="p-3.5">আইটেম</th>
+              <th class="p-3.5">মোট মূল্য</th>
+              <th class="p-3.5">পেমেন্ট</th>
+              <th class="p-3.5">কুরিয়ার ও ট্র্যাকিং</th>
+              <th class="p-3.5">স্ট্যাটাস</th>
+            </tr>
+          </thead>
+          <tbody id="orders-table-body" class="divide-y divide-slate-200">
+            <!-- Dynamic rows -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB 3: CUSTOMER CRM & SMART FOLLOW-UPS -->
+    <div id="tab-crm" class="hidden flex-1 p-6 overflow-y-auto custom-scrollbar">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="text-xl font-bold text-slate-900">কাস্টমার রিলেশনশিপ (CRM) ও ফলো-আপ</h2>
+          <p class="text-xs text-slate-500">লিড স্টেজ অনুযায়ী গ্রাহকদের তথ্য এবং আন-অ্যানসার্ড দাম বা পেমেন্ট পেন্ডিংদের AI ফলো-আপ ড্রাফট</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- CRM Customers Table -->
+        <div class="lg:col-span-2 bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+          <h3 class="font-bold text-sm text-slate-900 mb-3">কাস্টমার প্রোফাইল লিস্ট</h3>
+          <div id="crm-customers-list" class="space-y-3">
+            <!-- Dynamic CRM cards -->
+          </div>
+        </div>
+
+        <!-- Follow-up Suggestion Center -->
+        <div class="bg-indigo-50/50 rounded-xl border border-indigo-200 p-5">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-lg">⏰</span>
+            <h3 class="font-bold text-sm text-indigo-900">AI রিকমেন্ডেড ফলো-আপ ড্রাফট</h3>
+          </div>
+          <p class="text-xs text-indigo-700 mb-4 leading-relaxed">
+            যেসব কাস্টমার প্রাইস জেনে আর মেসেজ দেয়নি কিংবা কার্ট ছেড়ে চলে গেছে, তাদের জন্য স্বয়ংক্রিয় ফলো-আপ ড্রাফট:
+          </p>
+          <div id="crm-followups-container" class="space-y-3">
+            <!-- Dynamic follow ups -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: KNOWLEDGE BASE & RAG CATALOG -->
+    <div id="tab-knowledge" class="hidden flex-1 p-6 overflow-y-auto custom-scrollbar">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="text-xl font-bold text-slate-900">নলেজ বেস ও প্রোডাক্ট ক্যাটালগ (RAG)</h2>
+          <p class="text-xs text-slate-500">আপনার পণ্যের দাম, সাইজ, স্টক এবং ডেলিভারি পলিসি যা থেকে AI সঠিক উত্তর দেয়</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Products Section -->
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold text-sm text-slate-900">ইনভেন্টরি ও ক্যাটালগ (৪টি পণ্য সক্রিয়)</h3>
+            <span class="text-xs text-blue-600 font-bold">+ প্রোডাক্ট যোগ করুন</span>
+          </div>
+          <div id="kb-product-list" class="space-y-3">
+            <!-- Dynamic products -->
+          </div>
+        </div>
+
+        <!-- FAQs & Policies -->
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold text-sm text-slate-900">বিজনেস পলিসি ও FAQ (Q&A Pairs)</h3>
+            <span class="text-xs text-blue-600 font-bold">+ নতুন FAQ যোগ করুন</span>
+          </div>
+          <div id="kb-faq-list" class="space-y-3">
+            <!-- Dynamic FAQs -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: ANALYTICS & ROI REPORT -->
+    <div id="tab-analytics" class="hidden flex-1 p-6 overflow-y-auto custom-scrollbar">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="text-xl font-bold text-slate-900">পারফর্মেন্স ও আরওআই (ROI) ড্যাশবোর্ড</h2>
+          <p class="text-xs text-slate-500">রিপ্লাইরাজা ব্যবহারের ফলে সেলস বৃদ্ধি, মিসড মেসেজ হ্রাস এবং টিমের দক্ষতা</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+          <div class="text-xs text-slate-500 font-medium">মোট ইনবক্স কনভার্সন</div>
+          <div class="text-2xl font-black text-slate-900 mt-1">৩টি থ্রেড</div>
+          <div class="text-[11px] text-green-600 font-semibold mt-1">১০০% অ্যাক্টিভ</div>
+        </div>
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+          <div class="text-xs text-slate-500 font-medium">চ্যাট থেকে তৈরি অর্ডার</div>
+          <div class="text-2xl font-black text-blue-600 mt-1">২টি অর্ডার</div>
+          <div class="text-[11px] text-blue-600 font-semibold mt-1">৳ ৩,৫০০ রেভিনিউ</div>
+        </div>
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+          <div class="text-xs text-slate-500 font-medium">গড় প্রথম রেসপন্স টাইম</div>
+          <div class="text-2xl font-black text-indigo-600 mt-1">১.৮ মিনিট</div>
+          <div class="text-[11px] text-green-600 font-semibold mt-1">আগের চেয়ে ৯২% দ্রুত</div>
+        </div>
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+          <div class="text-xs text-slate-500 font-medium">AI অ্যাসিস্টেড রেসপন্স রেট</div>
+          <div class="text-2xl font-black text-purple-600 mt-1">৮৫%</div>
+          <div class="text-[11px] text-purple-600 font-semibold mt-1">১০০% হিউম্যান অ্যাপ্রুভড</div>
+        </div>
+      </div>
+
+      <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+        <h3 class="font-bold text-sm text-slate-900 mb-4">💡 AI সাপ্তাহিক সেলস ও অপারেশনাল রিকমেন্ডেশন</h3>
+        <ul class="space-y-3 text-xs text-slate-700">
+          <li class="p-3 bg-blue-50 rounded-lg border border-blue-100 flex items-start gap-2">
+            <span>🔹</span>
+            <span>পাঞ্জাবির Royal Navy XL সাইজ সবচেয়ে বেশি সার্চ হচ্ছে। এর স্টক বৃদ্ধি করার অনুরোধ করা হচ্ছে।</span>
+          </li>
+          <li class="p-3 bg-amber-50 rounded-lg border border-amber-100 flex items-start gap-2">
+            <span>🔹</span>
+            <span>চট্টগ্রাম ও সিলেটের কাস্টমাররা ক্যাশ অন ডেলিভারিতে রেডএক্সের ডেলিভারি স্পিড পছন্দ করছেন।</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- TAB 6: AI MODE & SETTINGS -->
+    <div id="tab-settings" class="hidden flex-1 p-6 overflow-y-auto custom-scrollbar">
+      <div class="max-w-4xl mx-auto space-y-6">
+        <div>
+          <h2 class="text-xl font-bold text-slate-900">AI কন্ট্রোল ও গার্ডরেল সেটিংস</h2>
+          <p class="text-xs text-slate-500">আপনার শপের স্বকীয় ব্র্যান্ডিং এবং AI কীভাবে মেসেজের উত্তর দেবে তার পূর্ণ নিয়ন্ত্রণ</p>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-5">
+          <h3 class="font-bold text-sm text-slate-900">১. রিপ্লাই মোড নির্বাচন করুন (Reply Mode)</h3>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <label class="p-4 border-2 border-blue-600 rounded-xl bg-blue-50/40 cursor-pointer block">
+              <input type="radio" name="reply_mode" value="draft_only" checked onchange="updateMode('draft_only')" class="mb-2">
+              <div class="font-bold text-xs text-blue-900">Draft Only (ডিফল্ট)</div>
+              <div class="text-[11px] text-slate-600 mt-1">AI ড্রাফট সাজিয়ে রাখবে; মানুষ দেখে অনুমতি দিলে তবেই যাবে। সবচেয়ে নিরাপদ।</div>
+            </label>
+
+            <label class="p-4 border border-slate-200 rounded-xl bg-white cursor-pointer block hover:border-slate-300">
+              <input type="radio" name="reply_mode" value="assisted" onchange="updateMode('assisted')" class="mb-2">
+              <div class="font-bold text-xs text-slate-900">Assisted Auto-Reply</div>
+              <div class="text-[11px] text-slate-600 mt-1">শুধুমাত্র ডেলিভারি চার্জ ও সাধারণ FAQ-তে অটো রিপ্লাই যাবে। বাকি সব ড্রাফট হবে।</div>
+            </label>
+
+            <label class="p-4 border border-slate-200 rounded-xl bg-white cursor-pointer block hover:border-slate-300">
+              <input type="radio" name="reply_mode" value="autonomous" onchange="updateMode('autonomous')" class="mb-2">
+              <div class="font-bold text-xs text-slate-900">Autonomous (স্বায়ত্তশাসিত)</div>
+              <div class="text-[11px] text-slate-600 mt-1">AI সরাসরি কাস্টমারকে উত্তর দেবে। শুধুমাত্র অভিযোগ ও জটিল ক্ষেত্রে মানুষের কাছে পাঠাবে।</div>
+            </label>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+          <h3 class="font-bold text-sm text-slate-900">২. এস্কেলেশন কি-ওয়ার্ড ও সেফটি গার্ডরেলস</h3>
+          <p class="text-xs text-slate-500">নিচের শব্দ বা কারণগুলো মেসেজে থাকলে AI উত্তর বন্ধ রেখে সরাসরি এজেন্টের মনোযোগ আকর্ষণ করবে:</p>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-700 flex flex-wrap gap-2">
+            <span class="px-2.5 py-1 bg-red-100 text-red-800 rounded font-semibold">refund</span>
+            <span class="px-2.5 py-1 bg-red-100 text-red-800 rounded font-semibold">রিফান্ড</span>
+            <span class="px-2.5 py-1 bg-red-100 text-red-800 rounded font-semibold">police</span>
+            <span class="px-2.5 py-1 bg-red-100 text-red-800 rounded font-semibold">ছেঁড়া / damage</span>
+            <span class="px-2.5 py-1 bg-red-100 text-red-800 rounded font-semibold">মামলা</span>
+            <span class="px-2.5 py-1 bg-red-100 text-red-800 rounded font-semibold">complain</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Client Application Logic -->
+  <script>
+    let currentTab = 'inbox';
+    let conversations = [];
+    let activeConversationId = 'conv_1';
+    let activeConversationData = null;
+
+    async function loadData() {
+      try {
+        const res = await fetch('/api/conversations');
+        conversations = await res.json();
+        renderThreadList();
+        if (conversations.length > 0) {
+          selectConversation(activeConversationId || conversations[0].id);
+        }
+        loadOrders();
+        loadCRM();
+        loadKnowledge();
+      } catch (err) {
+        console.error('Failed to load initial data', err);
+      }
+    }
+
+    function switchTab(tab) {
+      currentTab = tab;
+      const tabs = ['inbox', 'orders', 'crm', 'knowledge', 'analytics', 'settings'];
+      tabs.forEach(t => {
+        const el = document.getElementById(`tab-${t}`);
+        const btn = document.getElementById(`tab-btn-${t}`);
+        if (el) el.classList.toggle('hidden', t !== tab);
+        if (btn) {
+          if (t === tab) {
+            btn.className = "w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-blue-600 text-white font-semibold transition";
+          } else {
+            btn.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-800 text-slate-300 transition";
+          }
+        }
+      });
+      document.getElementById('view-title').innerText = {
+        inbox: 'অমনিচ্যানেল ইনবক্স (Omnichannel Inbox)',
+        orders: 'অর্ডার ও কুরিয়ার ট্র্যাকিং',
+        crm: 'কাস্টমার ও সিআরএম (CRM)',
+        knowledge: 'নলেজ বেস ও প্রোডাক্ট ক্যাটালগ (RAG)',
+        analytics: 'অ্যানালিটিক্স ও আরওআই (ROI)',
+        settings: 'AI সেটিংস ও গার্ডরেলস'
+      }[tab];
+    }
+
+    function renderThreadList() {
+      const container = document.getElementById('thread-list');
+      container.innerHTML = '';
+      conversations.forEach(c => {
+        const item = document.createElement('div');
+        const isActive = c.id === activeConversationId;
+        item.className = `p-3.5 cursor-pointer hover:bg-slate-100 transition border-l-4 ${isActive ? 'bg-blue-50/70 border-blue-600' : 'border-transparent'}`;
+        item.onclick = () => selectConversation(c.id);
+
+        const channelEmoji = { facebook: '📘 FB', whatsapp: '💬 WA', instagram: '📸 IG', website: '🌐 Web' }[c.channel] || '💬';
+
+        item.innerHTML = `
+          <div class="flex items-center justify-between mb-1">
+            <span class="font-bold text-xs text-slate-900">${c.customer?.name || 'Customer'}</span>
+            <span class="text-[10px] text-slate-500">${channelEmoji}</span>
+          </div>
+          <div class="text-[11px] text-slate-600 truncate mb-1">
+            ${c.lastMessage?.text || 'No messages'}
+          </div>
+          <div class="flex items-center justify-between text-[10px]">
+            <span class="px-1.5 py-0.5 rounded font-bold ${c.status === 'escalated' ? 'bg-red-100 text-red-700' : c.status === 'pending_approval' ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700'}">
+              ${c.status === 'escalated' ? '🚨 এস্কেলেটেড' : c.status === 'pending_approval' ? '⏳ ড্রাফট অপেক্ষমাণ' : '✓ ওপেন'}
+            </span>
+            ${c.unread_count > 0 ? `<span class="w-2 h-2 rounded-full bg-blue-600"></span>` : ''}
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    async function selectConversation(id) {
+      activeConversationId = id;
+      renderThreadList();
+      const res = await fetch(`/api/conversations/${id}`);
+      const data = await res.json();
+      activeConversationData = data;
+
+      // Update header info
+      document.getElementById('active-cust-name').innerText = data.customer?.name || 'Customer';
+      document.getElementById('active-cust-meta').innerText = `${data.customer?.phone || 'No phone'} • ${data.customer?.address || 'Bangladesh'}`;
+      document.getElementById('active-channel-badge').innerText = data.conversation.channel.toUpperCase();
+      document.getElementById('active-status-badge').innerText = data.conversation.status;
+
+      // Update right context pane
+      document.getElementById('side-cust-name').innerText = data.customer?.name || 'Customer';
+      document.getElementById('side-cust-phone').innerText = data.customer?.phone || 'N/A';
+      document.getElementById('side-cust-addr').innerText = data.customer?.address || 'N/A';
+      document.getElementById('lead-stage-badge').innerText = data.customer?.lead_stage || 'Inquiry';
+
+      // Render Messages
+      const msgContainer = document.getElementById('message-container');
+      msgContainer.innerHTML = '';
+
+      let pendingDraft = null;
+
+      data.messages.forEach(m => {
+        if (m.sender_type === 'ai_draft' && m.status === 'draft_pending') {
+          pendingDraft = m;
+          return;
+        }
+
+        const bubble = document.createElement('div');
+        const isMe = m.sender_type === 'agent' || m.sender_type === 'ai';
+        bubble.className = `flex ${isMe ? 'justify-end' : 'justify-start'}`;
+
+        bubble.innerHTML = `
+          <div class="max-w-[75%] p-3.5 rounded-2xl text-xs sm:text-sm ${isMe ? 'bg-blue-600 text-white rounded-tr-sm shadow-sm' : 'bg-white border border-slate-200 text-slate-800 rounded-tl-sm shadow-sm'}">
+            <div class="text-[10px] mb-1 font-semibold ${isMe ? 'text-blue-200' : 'text-slate-400'}">
+              ${m.sender_type === 'agent' ? 'এজেন্ট' : m.sender_type === 'ai' ? 'ReplyRaja AI' : data.customer?.name}
+              ${m.was_ai_assisted ? ' • (AI ড্রাফট হতে)' : ''}
+            </div>
+            <div class="leading-relaxed whitespace-pre-wrap">${m.text}</div>
+          </div>
+        `;
+        msgContainer.appendChild(bubble);
+      });
+
+      msgContainer.scrollTop = msgContainer.scrollHeight;
+
+      // Handle AI Draft Box
+      const draftBox = document.getElementById('ai-draft-review-box');
+      if (pendingDraft) {
+        draftBox.classList.remove('hidden');
+        document.getElementById('draft-textarea').value = pendingDraft.text;
+        document.getElementById('draft-confidence').innerText = `কনফিডেন্স: ${Math.round((pendingDraft.confidence_score || 0.95) * 100)}%`;
+        document.getElementById('draft-reason').innerText = pendingDraft.reason || 'ক্যাটালগ ও বিজনেস পলিসি RAG';
+        draftBox.dataset.draftId = pendingDraft.id;
+      } else {
+        draftBox.classList.add('hidden');
+      }
+    }
+
+    async function approveAIDraft() {
+      const draftBox = document.getElementById('ai-draft-review-box');
+      const draftId = draftBox.dataset.draftId;
+      const edited_text = document.getElementById('draft-textarea').value;
+
+      if (!draftId) return;
+
+      const res = await fetch(`/api/conversations/${activeConversationId}/drafts/${draftId}/approve`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ edited_text })
+      });
+
+      if (res.ok) {
+        await loadData();
+      }
+    }
+
+    async function sendManualMessage() {
+      const input = document.getElementById('manual-msg-input');
+      const text = input.value.trim();
+      if (!text) return;
+      input.value = '';
+
+      await fetch(`/api/conversations/${activeConversationId}/messages`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text })
+      });
+
+      await loadData();
+    }
+
+    async function simulateIncomingMessage() {
+      const samplePrompts = [
+        'Bhai panjabi tar sathe ki match kora pajama pabo? delivery koto?',
+        'Tater shari ta kobe pabo? tracking ase kono?',
+        'Eta te 300 taka discount dile ekhon e nibo.'
+      ];
+      const randomPrompt = samplePrompts[Math.floor(Math.random() * samplePrompts.length)];
+
+      await fetch(`/api/conversations/${activeConversationId}/messages/incoming`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: randomPrompt })
+      });
+
+      await loadData();
+    }
+
+    async function handleCreateOrder(e) {
+      e.preventDefault();
+      const productSelect = document.getElementById('ord-product-select');
+      const areaSelect = document.getElementById('ord-area-select');
+      const paymentSelect = document.getElementById('ord-payment-select');
+
+      const payload = {
+        conversation_id: activeConversationId,
+        customer_id: activeConversationData?.customer?.id,
+        customer_name: activeConversationData?.customer?.name || 'Customer',
+        customer_phone: activeConversationData?.customer?.phone || '01712345678',
+        delivery_address: activeConversationData?.customer?.address || 'Dhaka',
+        delivery_area: areaSelect.value,
+        delivery_charge: areaSelect.value === 'Inside Dhaka' ? 70 : 130,
+        payment_method: paymentSelect.value,
+        courier_name: 'RedX',
+        items: [
+          {
+            product_id: productSelect.value,
+            title: productSelect.options[productSelect.selectedIndex].text,
+            price: 1850,
+            quantity: 1
+          }
+        ]
+      };
+
+      const res = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (res.ok) {
+        alert('অর্ডার সফলভাবে তৈরি হয়েছে! কাস্টমারকে কনফার্মেশন ও ট্র্যাকিং পাঠানো হয়েছে।');
+        await loadData();
+      }
+    }
+
+    async function loadOrders() {
+      const res = await fetch('/api/orders');
+      const orders = await res.json();
+      const tbody = document.getElementById('orders-table-body');
+      tbody.innerHTML = '';
+
+      orders.forEach(o => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-50 transition';
+        tr.innerHTML = `
+          <td class="p-3.5 font-bold text-blue-600">#${o.id.toUpperCase()}</td>
+          <td class="p-3.5">
+            <div class="font-bold text-slate-800">${o.customer_name}</div>
+            <div class="text-slate-500">${o.customer_phone}</div>
+          </td>
+          <td class="p-3.5 text-slate-700">${o.items?.[0]?.title || 'Product'}</td>
+          <td class="p-3.5 font-bold text-slate-900">৳${o.total_amount}</td>
+          <td class="p-3.5 uppercase font-semibold text-slate-600">${o.payment_method}</td>
+          <td class="p-3.5">
+            <span class="font-bold text-slate-800">${o.courier_name}</span>
+            <div class="text-[10px] text-slate-500">${o.tracking_id || 'Pending'}</div>
+          </td>
+          <td class="p-3.5">
+            <span class="px-2 py-0.5 rounded font-bold bg-green-100 text-green-800">${o.order_status}</span>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function loadCRM() {
+      const resCust = await fetch('/api/crm/customers');
+      const customers = await resCust.json();
+      const custList = document.getElementById('crm-customers-list');
+      custList.innerHTML = '';
+
+      customers.forEach(c => {
+        const card = document.createElement('div');
+        card.className = 'p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between';
+        card.innerHTML = `
+          <div>
+            <div class="font-bold text-xs text-slate-900">${c.name} (${c.phone || 'No phone'})</div>
+            <div class="text-[11px] text-slate-500">${c.address || 'Dhaka, Bangladesh'}</div>
+          </div>
+          <div class="text-right">
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-800">${c.lead_stage}</span>
+            <div class="text-[10px] text-slate-500 mt-1">অর্ডার: ${c.total_orders || 0}টি (৳${c.total_spent || 0})</div>
+          </div>
+        `;
+        custList.appendChild(card);
+      });
+
+      const resFollow = await fetch('/api/crm/follow-ups/suggested');
+      const followUps = await resFollow.json();
+      const followCont = document.getElementById('crm-followups-container');
+      followCont.innerHTML = '';
+
+      followUps.forEach(f => {
+        const box = document.createElement('div');
+        box.className = 'p-3 bg-white rounded-xl border border-indigo-200 text-xs shadow-sm';
+        box.innerHTML = `
+          <div class="flex items-center justify-between font-bold text-indigo-950 mb-1">
+            <span>${f.customer.name}</span>
+            <span class="text-[10px] bg-indigo-100 text-indigo-800 px-1.5 py-0.5 rounded">${f.type}</span>
+          </div>
+          <div class="text-slate-600 mb-2 italic">"${f.suggested_draft}"</div>
+          <button onclick="alert('ফলো-আপ ড্রাফট অনুমোদিত ও গ্রাহককে পাঠানো হয়েছে!')" class="w-full py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded font-bold text-[11px] transition">
+            ✓ ১-ক্লিকে ফলো-আপ পাঠান
+          </button>
+        `;
+        followCont.appendChild(box);
+      });
+    }
+
+    async function loadKnowledge() {
+      const resPrd = await fetch('/api/knowledge/products');
+      const products = await resPrd.json();
+      const pList = document.getElementById('kb-product-list');
+      pList.innerHTML = '';
+
+      products.forEach(p => {
+        const item = document.createElement('div');
+        item.className = 'p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between text-xs';
+        item.innerHTML = `
+          <div>
+            <div class="font-bold text-slate-900">${p.bangla_title}</div>
+            <div class="text-slate-500">SKU: ${p.sku} • সাইজ: ${p.sizes.join(', ')}</div>
+          </div>
+          <div class="text-right">
+            <div class="font-bold text-blue-600">৳${p.price}</div>
+            <div class="text-[10px] text-green-600">স্টক: ${p.stock} পিস</div>
+          </div>
+        `;
+        pList.appendChild(item);
+      });
+
+      const resFaq = await fetch('/api/knowledge/faqs');
+      const faqs = await resFaq.json();
+      const fList = document.getElementById('kb-faq-list');
+      fList.innerHTML = '';
+
+      faqs.forEach(f => {
+        const item = document.createElement('div');
+        item.className = 'p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1';
+        item.innerHTML = `
+          <div class="font-bold text-slate-900">প্রশ্ন: ${f.question}</div>
+          <div class="text-slate-600 leading-relaxed">উত্তর: ${f.answer}</div>
+        `;
+        fList.appendChild(item);
+      });
+    }
+
+    async function updateMode(mode) {
+      await fetch('/api/settings/settings', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reply_mode: mode })
+      });
+      document.getElementById('sidebar-reply-mode').innerText = mode.replace('_', ' ');
+      alert(`AI মোড পরিবর্তন করে '${mode}' করা হয়েছে।`);
+    }
+
+    function updateDeliveryCharge() {
+      const area = document.getElementById('ord-area-select').value;
+      const charge = area === 'Inside Dhaka' ? 70 : 130;
+      document.getElementById('ord-charge').innerText = `৳ ${charge}`;
+      document.getElementById('ord-total').innerText = `৳ ${1850 + charge}`;
+    }
+
+    let appTheme = localStorage.getItem('replyraja_theme') || 'light';
+    let appLang = localStorage.getItem('replyraja_lang') || 'bn';
+
+    function applyAppTheme(theme) {
+      appTheme = theme;
+      localStorage.setItem('replyraja_theme', theme);
+      const icon = document.getElementById('app-theme-icon');
+      if (icon) icon.innerText = theme === 'dark' ? '☀️' : '🌙';
+    }
+
+    function toggleAppTheme() {
+      applyAppTheme(appTheme === 'light' ? 'dark' : 'light');
+    }
+
+    function applyAppLang(lang) {
+      appLang = lang;
+      localStorage.setItem('replyraja_lang', lang);
+      const label = document.getElementById('app-lang-label');
+      if (label) label.innerText = lang === 'bn' ? 'বাংলা' : 'English';
+      document.getElementById('view-title').innerText = lang === 'bn' 
+        ? 'অমনিচ্যানেল ইনবক্স (Omnichannel Inbox)' 
+        : 'Omnichannel Inbox';
+    }
+
+    function toggleAppLang() {
+      applyAppLang(appLang === 'bn' ? 'en' : 'bn');
+    }
+
+    applyAppTheme(appTheme);
+    applyAppLang(appLang);
+
+    loadData();
+  </script>
+
+</body>
+</html>

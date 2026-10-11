@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ReplyRaja — AI Sales Assistant for Bangladeshi Online Businesses</title>
+  <link rel="icon" type="image/png" href="/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'Hind Siliguri', 'sans-serif'],
+            bengali: ['Hind Siliguri', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', 'Hind Siliguri', sans-serif; transition: background-color 0.2s, color 0.2s; }
+    .glassmorphism { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); }
+    .dark .glassmorphism { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px); }
+  </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 antialiased selection:bg-blue-500 selection:text-white">
+
+  <!-- Top Announcement Bar -->
+  <div class="bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-800 text-white text-xs sm:text-sm py-2 px-4 text-center font-medium flex items-center justify-center gap-2">
+    <span class="inline-block px-2 py-0.5 bg-yellow-400 text-slate-900 rounded font-bold text-xs uppercase tracking-wider">New</span>
+    <span data-i18n="announcement">⚡ রিপ্লাইরাজা ১.০ লাইভ: বাংলা ও বাংলিশে কাস্টমারের মেসেজকে সরাসরি অর্ডারে পরিণত করুন!</span>
+    <a href="#interactive-demo" class="underline ml-2 font-bold hover:text-yellow-200" data-i18n="liveDemoLink">লাইভ ডেমো দেখুন →</a>
+  </div>
+
+  <!-- Navigation Bar -->
+  <nav class="sticky top-0 z-50 glassmorphism border-b border-slate-200 dark:border-slate-800 transition">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="/" class="flex items-center gap-2.5">
+          <img src="/logo.png" alt="ReplyRaja" class="h-10 w-10 object-contain rounded-xl shadow-sm border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-0.5" />
+          <div>
+            <span class="text-xl font-black tracking-tight text-slate-900 dark:text-white">ReplyRaja</span>
+            <span class="text-[10px] text-blue-600 dark:text-blue-400 font-bold block uppercase tracking-wider leading-none" data-i18n="logoSub">রিপ্লাইরাজা AI</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Nav links -->
+      <div class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600 dark:text-slate-300">
+        <a href="#features" class="hover:text-blue-600 dark:hover:text-blue-400 transition" data-i18n="navFeatures">ফিচারসমূহ</a>
+        <a href="#interactive-demo" class="hover:text-blue-600 dark:hover:text-blue-400 transition" data-i18n="navDemo">লাইভ ডেমো</a>
+        <a href="#omnichannel" class="hover:text-blue-600 dark:hover:text-blue-400 transition" data-i18n="navChannels">চ্যানেল</a>
+        <a href="#pricing" class="hover:text-blue-600 dark:hover:text-blue-400 transition" data-i18n="navPricing">প্রাইসিং</a>
+        <a href="#faq" class="hover:text-blue-600 dark:hover:text-blue-400 transition" data-i18n="navFaq">সচরাচর প্রশ্ন</a>
+      </div>
+
+      <div class="flex items-center gap-2.5">
+        <!-- Theme Picker (Light / Dark) -->
+        <button onclick="toggleTheme()" id="theme-btn" class="p-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition" title="Toggle Theme">
+          <span id="theme-icon">🌙</span>
+        </button>
+
+        <!-- Functional Language Switcher (Bangla / English) -->
+        <button onclick="toggleLang()" id="lang-btn" class="px-3 py-1.5 text-xs font-bold border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 rounded-xl text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-1.5 shadow-sm">
+          <span>🌐</span>
+          <span id="lang-text">বাংলা</span>
+        </button>
+
+        <button onclick="openApp()" class="px-4 py-2 text-xs sm:text-sm font-bold bg-blue-600 text-white rounded-xl shadow-lg shadow-blue-600/25 hover:bg-blue-700 transition flex items-center gap-1.5">
+          <span data-i18n="btnDashboard">ড্যাশবোর্ড খুলুন</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="relative pt-16 pb-20 overflow-hidden bg-gradient-to-b from-blue-50/70 via-white to-slate-50 dark:from-slate-900/50 dark:via-slate-950 dark:to-slate-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+      
+      <!-- Trust pill -->
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100/70 dark:bg-blue-950/70 text-blue-800 dark:text-blue-300 text-xs sm:text-sm font-bold mb-6 border border-blue-200 dark:border-blue-800">
+        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+        <span data-i18n="heroBadge">বাংলাদেশি ফেসবুক পেজ ও অনলাইন শপগুলোর জন্য তৈরি</span>
+      </div>
+
+      <!-- Headline -->
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white tracking-tight leading-tight max-w-4xl mx-auto mb-6" data-i18n="heroHeadline">
+        কাস্টমারের মেসেজ আর মিস হবে না—<br class="hidden sm:inline"/>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600">
+          AI রিপ্লাই দেবে ও সরাসরি অর্ডার নিবে!
+        </span>
+      </h1>
+
+      <!-- Subheadline -->
+      <p class="text-lg sm:text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto font-medium leading-relaxed mb-8" data-i18n="heroSubhead">
+        Facebook Messenger, WhatsApp, Instagram ও ওয়েবসাইটের শত শত মেসেজের উত্তর দিন খাঁটি বাংলায়। ছবি চিনে প্রোডাক্ট ম্যাচিং, ক্যাশ অন ডেলিভারি (COD) অর্ডার ক্যাপচার এবং মানুষের ১০০% নিয়ন্ত্রণ।
+      </p>
+
+      <!-- CTAs -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+        <button onclick="openApp()" class="w-full sm:w-auto px-8 py-4 text-base font-bold bg-blue-600 text-white rounded-xl shadow-xl shadow-blue-600/30 hover:bg-blue-700 transition flex items-center justify-center gap-2">
+          <span data-i18n="btnTrial">১৪ দিনের ফ্রি ট্রায়াল শুরু করুন</span>
+          <span>🚀</span>
+        </button>
+        <a href="#interactive-demo" class="w-full sm:w-auto px-8 py-4 text-base font-bold bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 rounded-xl border border-slate-300 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/80 shadow-sm transition flex items-center justify-center gap-2">
+          <span data-i18n="btnSeeDemo">ইন্টারেক্টিভ ডেমো দেখুন</span>
+          <span>👀</span>
+        </a>
+      </div>
+
+      <!-- Outcome Proof Metrics -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto pt-6 border-t border-slate-200/80 dark:border-slate-800">
+        <div class="p-4 bg-white/80 dark:bg-slate-900/80 rounded-xl border border-slate-200/60 dark:border-slate-800 shadow-sm">
+          <div class="text-3xl font-extrabold text-blue-600 dark:text-blue-400" data-i18n="metric1Val">১.৮ মিনিট</div>
+          <div class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium mt-1" data-i18n="metric1Desc">গড় রিপ্লাই সময় (আগে ২৮ মিনিট)</div>
+        </div>
+        <div class="p-4 bg-white/80 dark:bg-slate-900/80 rounded-xl border border-slate-200/60 dark:border-slate-800 shadow-sm">
+          <div class="text-3xl font-extrabold text-green-600 dark:text-green-400" data-i18n="metric2Val">+৩৪%</div>
+          <div class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium mt-1" data-i18n="metric2Desc">অর্ডার কনভার্সন বৃদ্ধি</div>
+        </div>
+        <div class="p-4 bg-white/80 dark:bg-slate-900/80 rounded-xl border border-slate-200/60 dark:border-slate-800 shadow-sm">
+          <div class="text-3xl font-extrabold text-indigo-600 dark:text-indigo-400" data-i18n="metric3Val">১০০%</div>
+          <div class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium mt-1" data-i18n="metric3Desc">হিউম্যান-ইন-দ্য-লুপ কন্ট্রোল</div>
+        </div>
+        <div class="p-4 bg-white/80 dark:bg-slate-900/80 rounded-xl border border-slate-200/60 dark:border-slate-800 shadow-sm">
+          <div class="text-3xl font-extrabold text-purple-600 dark:text-purple-400" data-i18n="metric4Val">২৪/৭</div>
+          <div class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium mt-1" data-i18n="metric4Desc">রাতভর ড্রাফট ও সেলস সাপোর্ট</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Product Demo (Simulator) -->
+  <section id="interactive-demo" class="py-16 bg-white dark:bg-slate-900 border-y border-slate-200 dark:border-slate-800 transition">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <span class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest bg-blue-50 dark:bg-blue-950/60 px-3 py-1 rounded-full border border-blue-100 dark:border-blue-900" data-i18n="demoBadge">Live Simulator</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-3" data-i18n="demoTitle">নিজে পরীক্ষা করে দেখুন AI কীভাবে কাজ করে</h2>
+        <p class="text-slate-600 dark:text-slate-400 max-w-xl mx-auto text-sm sm:text-base mt-2" data-i18n="demoSubtitle">
+          নিচের মেসেজ অপশনগুলোতে ক্লিক করুন অথবা নিজে প্রশ্ন লিখে টেস্ট করুন:
+        </p>
+      </div>
+
+      <!-- Simulator Box -->
+      <div class="bg-slate-900 rounded-2xl shadow-2xl overflow-hidden border border-slate-800 grid grid-cols-1 lg:grid-cols-12 text-white">
+        
+        <!-- Left: Customer Conversation Feed -->
+        <div class="lg:col-span-7 p-6 border-b lg:border-b-0 lg:border-r border-slate-800 flex flex-col justify-between h-[520px]">
+          <div>
+            <div class="flex items-center justify-between pb-4 border-b border-slate-800 text-xs text-slate-400">
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-blue-500"></span>
+                <span class="font-bold text-white">Facebook Messenger</span> • <span data-i18n="simCustomerName">রহিম উদ্দিন (ধানমন্ডি)</span>
+              </div>
+              <span class="bg-slate-800 px-2.5 py-1 rounded text-slate-300" data-i18n="simChannel">চ্যানেল: ফেইসবুক</span>
+            </div>
+
+            <!-- Messages Window -->
+            <div id="sim-thread" class="space-y-4 py-4 overflow-y-auto max-h-[340px] pr-2">
+              <div class="flex justify-start">
+                <div class="bg-slate-800 text-slate-200 text-sm p-3.5 rounded-2xl rounded-tl-sm max-w-[85%] border border-slate-700">
+                  <div class="text-xs text-slate-400 mb-1 font-semibold" data-i18n="simCustLabel">কাস্টমার</div>
+                  Bhai navy blue panjabi XL hobe? Delivery charge koto Uttara te?
+                </div>
+              </div>
+
+              <!-- AI Draft Card with Human Approve / Edit Buttons -->
+              <div id="sim-ai-draft-card" class="bg-blue-950/60 border border-blue-700/60 rounded-xl p-4 my-3 text-sm">
+                <div class="flex items-center justify-between text-xs text-blue-300 mb-2 font-semibold">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-base">✨</span>
+                    <span data-i18n="simDraftTitle">AI সাজেস্টেড ড্রাফট (কনফিডেন্স: ৯৬%)</span>
+                  </div>
+                  <span class="bg-blue-600/40 text-blue-200 px-2 py-0.5 rounded text-[11px]" data-i18n="simPendingApproval">অনুমোদন অপেক্ষমাণ</span>
+                </div>
+                <div id="sim-draft-text" class="text-slate-100 text-sm leading-relaxed mb-3 bg-slate-900/80 p-3 rounded-lg border border-slate-800">
+                  জ্বি ভাইয়া, আমাদের প্রিমিয়াম লিনেন পাঞ্জাবির Royal Navy কালারের XL (42) সাইজটি স্টকে এভেইলএবল আছে! দাম ১৮৫০ টাকা। উত্তরায় (ঢাকার ভেতরে) ডেলিভারি চার্জ মাত্র ৭০ টাকা। ক্যাশ অন ডেলিভারিতে অর্ডার করতে চাইলে আপনার ফোন নম্বর ও পূর্ণাঙ্গ ঠিকানাটি শেয়ার করুন প্লিজ।
+                </div>
+                <div class="flex items-center gap-2">
+                  <button onclick="approveSimDraft()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg text-xs transition flex items-center gap-1">
+                    <span data-i18n="btnApproveSend">✓ অনুমোদন ও মেসেজ পাঠান</span>
+                  </button>
+                  <button onclick="editSimDraft()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs transition" data-i18n="btnEditDraft">
+                    ✏️ এডিট করুন
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Prompt Selector -->
+          <div class="pt-3 border-t border-slate-800">
+            <div class="text-xs text-slate-400 mb-2 font-medium" data-i18n="promptSelectorLabel">টেস্ট প্রম্পট সিলেক্ট করুন:</div>
+            <div class="flex flex-wrap gap-2">
+              <button onclick="triggerSimPrompt('ডেলিভারি চার্জ কত এবং ক্যাশ অন ডেলিভারি আছে?')" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700 transition" data-i18n="btnDeliveryPrompt">
+                🚚 ডেলিভারি ও COD
+              </button>
+              <button onclick="triggerSimPrompt('তাঁতের সুতি শাড়িটা নিতে চাই, বিকাশ নম্বর দেন')" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700 transition" data-i18n="btnPaymentPrompt">
+                💳 শাড়ি ও বিকাশ পেমেন্ট
+              </button>
+              <button onclick="triggerSimPrompt('প্রোডাক্ট ছেঁড়া পাইছি, পুলিশে কেস করবো ও রিফান্ড চাই!')" class="text-xs bg-red-950/60 hover:bg-red-900/60 text-red-300 px-3 py-1.5 rounded-lg border border-red-800 transition" data-i18n="btnComplaintPrompt">
+                🚨 কমপ্লেইন ও অটো এস্কেলেশন
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: AI Brain Context, Catalog & One-Click Order -->
+        <div class="lg:col-span-5 p-6 bg-slate-950 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-400" data-i18n="catalogTitle">AI ক্যাটালগ ও অর্ডার কার্ড</span>
+              <span class="text-xs bg-green-500/20 text-green-400 font-bold px-2 py-0.5 rounded">RAG Active</span>
+            </div>
+
+            <!-- Matched Product Card -->
+            <div class="my-4 p-3 bg-slate-900 rounded-xl border border-slate-800 flex items-center gap-3">
+              <img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=150&q=80" alt="Panjabi" class="w-14 h-14 rounded-lg object-cover">
+              <div class="text-xs">
+                <div class="font-bold text-white" data-i18n="catalogPrdTitle">প্রিমিয়াম লিনেন পাঞ্জাবি (রয়্যাল নেভি)</div>
+                <div class="text-slate-400" data-i18n="catalogPrdStock">SKU: PNJ-NAVY-01 • স্টক: ৪৫ পিস</div>
+                <div class="text-blue-400 font-extrabold text-sm mt-0.5">৳ ১,৮৫০</div>
+              </div>
+            </div>
+
+            <!-- Auto-extracted Order Details -->
+            <div class="space-y-2 text-xs">
+              <div class="text-slate-400 font-semibold mb-1" data-i18n="orderPrepHeader">অর্ডার তৈরির জন্য প্রস্তুত তথ্য:</div>
+              <div class="p-2.5 bg-slate-900 rounded-lg border border-slate-800 flex justify-between">
+                <span class="text-slate-400" data-i18n="orderAreaLabel">ডেলিভারি এরিয়া:</span>
+                <span class="font-bold text-white">Inside Dhaka (৳৭০)</span>
+              </div>
+              <div class="p-2.5 bg-slate-900 rounded-lg border border-slate-800 flex justify-between">
+                <span class="text-slate-400" data-i18n="orderPaymentLabel">পেমেন্ট মেথড:</span>
+                <span class="font-bold text-white">ক্যাশ অন ডেলিভারি (COD)</span>
+              </div>
+              <div class="p-2.5 bg-slate-900 rounded-lg border border-slate-800 flex justify-between">
+                <span class="text-slate-400" data-i18n="orderTotalLabel">মোট প্রদেয়:</span>
+                <span class="font-bold text-green-400 text-sm">৳ ১,৯২০ (পণ্য + চার্জ)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- One-click Order Generation -->
+          <div class="pt-4 border-t border-slate-800">
+            <button onclick="openOrderModalSim()" class="w-full py-3 bg-green-600 hover:bg-green-500 text-white font-bold rounded-xl text-sm transition flex items-center justify-center gap-2 shadow-lg shadow-green-600/30">
+              <span data-i18n="btnCreateOrder">🛒 ১-ক্লিকে নিশ্চিত অর্ডার তৈরি করুন</span>
+            </button>
+            <div class="text-[11px] text-slate-500 text-center mt-2" data-i18n="humanControlNotice">
+              🔒 মার্চেন্ট ছাড়া AI নিজে কোনো অর্ডার ফাইনাল করে না
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Core Features Grid -->
+  <section id="features" class="py-20 bg-slate-50 dark:bg-slate-950 transition">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <span class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest bg-blue-100 dark:bg-blue-950/70 px-3 py-1 rounded-full border border-blue-200 dark:border-blue-900">Core Features</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-4" data-i18n="featuresHeading">
+          অনলাইন বিজনেসের সব জটিলতা সহজে সামলানোর পূর্ণাঙ্গ স্যুট
+        </h2>
+        <p class="text-slate-600 dark:text-slate-400 text-base mt-3" data-i18n="featuresSubheading">
+          শুধু চ্যাটবট নয়—রিপ্লাইরাজা হলো আপনার পেইজের একজন ফুল-টাইম ডিজিটাল সেলস ম্যানেজার।
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        
+        <!-- Feature 1: Omnichannel Inbox -->
+        <div class="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-md transition">
+          <div class="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 flex items-center justify-center text-2xl font-bold mb-5">
+            📥
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2" data-i18n="feat1Title">অমনিচ্যানেল ইউনিফাইড ইনবক্স</h3>
+          <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed" data-i18n="feat1Desc">
+            ফেসবুক পেইজ, ইনস্টাগ্রাম, হোয়াটসঅ্যাপ বিজনেস এবং ওয়েবসাইটের সব কাস্টমার মেসেজ একই ড্যাশবোর্ডে। টিম মেম্বারদের মাঝে চ্যাট অ্যাসাইন এবং SLA টাইমার।
+          </p>
+        </div>
+
+        <!-- Feature 2: Bengali-First AI -->
+        <div class="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-md transition">
+          <div class="w-12 h-12 rounded-xl bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-2xl font-bold mb-5">
+            🇧🇩
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2" data-i18n="feat2Title">খাঁটি বাংলা ও বাংলিশে উত্তর</h3>
+          <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed" data-i18n="feat2Desc">
+            কাস্টমার যে ভাষায়ই লিখুক না কেন—বাংলা, রোমানাইজড বাংলিশ কিংবা ইংরেজি—রিপ্লাইরাজা সঠিক গ্রামার ও বিনয়ী টোনে উত্তর প্রস্তুত করে।
+          </p>
+        </div>
+
+        <!-- Feature 3: Vision AI Photo Match -->
+        <div class="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-md transition">
+          <div class="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-950 text-purple-600 dark:text-purple-400 flex items-center justify-center text-2xl font-bold mb-5">
+            📸
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2" data-i18n="feat3Title">ছবি চিনে ক্যাটালগ প্রোডাক্ট ম্যাচ</h3>
+          <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed" data-i18n="feat3Desc">
+            কাস্টমার পণ্যের স্ক্রিনশট বা ছবি পাঠালে ভিশন এআই আপনার ক্যাটালগের সাথে মিলিয়ে দাম, সাইজ ও স্টক স্ট্যাটাস স্বয়ংক্রিয়ভাবে শনাক্ত করে।
+          </p>
+        </div>
+
+        <!-- Feature 4: 1-Click Order Capture -->
+        <div class="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-md transition">
+          <div class="w-12 h-12 rounded-xl bg-green-100 dark:bg-green-950 text-green-600 dark:text-green-400 flex items-center justify-center text-2xl font-bold mb-5">
+            📦
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2" data-i18n="feat4Title">অর্ডার ও কুরিয়ার ট্র্যাকিং</h3>
+          <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed" data-i18n="feat4Desc">
+            চ্যাট থেকেই নাম, ফোন, ঠিকানা ও আইটেম নিয়ে সরাসরি COD বা বিকাশ অর্ডার তৈরি। রেডএক্স, স্টিডফাস্ট ও পাঠাও ট্র্যাকিং ইন্টিগ্রেশন।
+          </p>
+        </div>
+
+        <!-- Feature 5: Human-in-the-loop Guardrails -->
+        <div class="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-md transition">
+          <div class="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-950 text-amber-600 dark:text-amber-400 flex items-center justify-center text-2xl font-bold mb-5">
+            🛡️
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2" data-i18n="feat5Title">মানুষের নিয়ন্ত্রণ ও অটো এস্কেলেশন</h3>
+          <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed" data-i18n="feat5Desc">
+            বাই-ডিফল্ট AI ড্রাফট তৈরি করবে, মার্চেন্ট অ্যাপ্রুভ করলে তবেই যাবে। কোনো রিফান্ড, অভিযোগ বা অস্বাভাবিক বার্গেনিং থাকলে সাথে সাথে মানুষের কাছে হ্যান্ডওভার।
+          </p>
+        </div>
+
+        <!-- Feature 6: Meta Business Suite Extension -->
+        <div class="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-md transition">
+          <div class="w-12 h-12 rounded-xl bg-sky-100 dark:bg-sky-950 text-sky-600 dark:text-sky-400 flex items-center justify-center text-2xl font-bold mb-5">
+            🧩
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2" data-i18n="feat6Title">মেটা বিজনেস স্যুট এক্সটেনশন</h3>
+          <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed" data-i18n="feat6Desc">
+            আপনার পরিচিত ফেসবুক ইনবক্সেই রিপ্লাইরাজার স্মার্ট সাইডবার দেখা যাবে। ট্যাব সুইচ ছাড়াই ১-ক্লিকে ড্রাফট ইনসার্ট ও কাস্টমার হিস্ট্রি চেক।
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Omnichannel Integrations -->
+  <section id="omnichannel" class="py-16 bg-white dark:bg-slate-900 border-y border-slate-200 dark:border-slate-800 transition">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white" data-i18n="channelsHeading">যেসব চ্যানেলের সাথে অফিশিয়ালি সংযুক্ত</h2>
+      <p class="text-slate-600 dark:text-slate-400 text-sm sm:text-base mt-2" data-i18n="channelsSubheading">অফিশিয়াল ক্লাউড এপিআই ব্যবহারের কারণে একাউন্ট ব্লক বা পলিসি ভায়োলেশনের ঝুঁকি নেই</p>
+
+      <div class="flex flex-wrap items-center justify-center gap-6 sm:gap-12 mt-10">
+        <div class="flex items-center gap-3 px-5 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 font-bold text-slate-800 dark:text-slate-200 shadow-sm">
+          <span class="text-blue-600 text-2xl">📘</span> Facebook Messenger
+        </div>
+        <div class="flex items-center gap-3 px-5 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 font-bold text-slate-800 dark:text-slate-200 shadow-sm">
+          <span class="text-green-500 text-2xl">💬</span> WhatsApp Business Cloud
+        </div>
+        <div class="flex items-center gap-3 px-5 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 font-bold text-slate-800 dark:text-slate-200 shadow-sm">
+          <span class="text-pink-600 text-2xl">📸</span> Instagram Direct
+        </div>
+        <div class="flex items-center gap-3 px-5 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 font-bold text-slate-800 dark:text-slate-200 shadow-sm">
+          <span class="text-indigo-600 text-2xl">🌐</span> Website Live Widget
+        </div>
+        <div class="flex items-center gap-3 px-5 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 font-bold text-slate-800 dark:text-slate-200 shadow-sm">
+          <span class="text-red-500 text-2xl">🚚</span> RedX & Steadfast Courier
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section id="pricing" class="py-20 bg-slate-50 dark:bg-slate-950 transition">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <span class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest bg-blue-100 dark:bg-blue-950/70 px-3 py-1 rounded-full border border-blue-200 dark:border-blue-900">Transparent Pricing</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-4" data-i18n="pricingHeading">স্বচ্ছ ও সাশ্রয়ী সাবস্ক্রিপশন প্ল্যান</h2>
+        <p class="text-slate-600 dark:text-slate-400 text-base mt-2" data-i18n="pricingSubheading">১৪ দিনের ফ্রি ট্রায়াল, কোনো ক্রেডিট কার্ড লাগবে না। বিকাশ বা নগদে সহজে পেমেন্ট করুন।</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto items-stretch">
+        
+        <!-- Starter Plan -->
+        <div class="bg-white dark:bg-slate-900 rounded-2xl p-8 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="text-lg font-bold text-slate-900 dark:text-white" data-i18n="starterTitle">স্টার্টার (Starter)</div>
+            <div class="text-slate-500 dark:text-slate-400 text-xs mt-1" data-i18n="starterDesc">নতুন ফেসবুক পেজ ও স্মল সেলারদের জন্য</div>
+            <div class="my-6">
+              <span class="text-4xl font-black text-slate-900 dark:text-white">৳১,৪৯০</span>
+              <span class="text-slate-500 dark:text-slate-400 text-xs font-semibold" data-i18n="perMonth">/ প্রতি মাস</span>
+            </div>
+            <ul class="space-y-3 text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium">
+              <li class="flex items-center gap-2" data-i18n="starterF1">✓ ১টি ফেসবুক পেজ কানেকশন</li>
+              <li class="flex items-center gap-2" data-i18n="starterF2">✓ ১,০০০ AI রিপ্লাই ড্রাফট</li>
+              <li class="flex items-center gap-2" data-i18n="starterF3">✓ বাংলা ও বাংলিশ ল্যাঙ্গুয়েজ মডেল</li>
+              <li class="flex items-center gap-2" data-i18n="starterF4">✓ হিউম্যান অ্যাপ্রুভাল ইনবক্স</li>
+              <li class="flex items-center gap-2" data-i18n="starterF5">✓ বেসিক ক্যাটালগ ও FAQ RAG</li>
+            </ul>
+          </div>
+          <button onclick="openApp()" class="w-full mt-8 py-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 font-bold rounded-xl text-sm transition" data-i18n="btnStartTrial">
+            ১৪ দিনের ট্রায়াল শুরু করুন
+          </button>
+        </div>
+
+        <!-- Growth Plan (Popular) -->
+        <div class="bg-slate-900 text-white rounded-2xl p-8 border-2 border-blue-500 shadow-xl flex flex-col justify-between relative transform md:-translate-y-2">
+          <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-bold px-4 py-1 rounded-full uppercase tracking-wider" data-i18n="popularTag">
+            সবচেয়ে জনপ্রিয় (Best Value)
+          </div>
+          <div>
+            <div class="text-lg font-bold text-white" data-i18n="growthTitle">গ্রোথ (Growth)</div>
+            <div class="text-slate-400 text-xs mt-1" data-i18n="growthDesc">সক্রিয় শপ ও দ্রুত বর্ধনশীল ব্র্যান্ডের জন্য</div>
+            <div class="my-6">
+              <span class="text-4xl font-black text-white">৳২,৯৯০</span>
+              <span class="text-slate-400 text-xs font-semibold" data-i18n="perMonth">/ প্রতি মাস</span>
+            </div>
+            <ul class="space-y-3 text-xs sm:text-sm text-slate-300 font-medium">
+              <li class="flex items-center gap-2" data-i18n="growthF1">✓ ফেসবুক + হোয়াটসঅ্যাপ + ইনস্টাগ্রাম + ওয়েবসাইট</li>
+              <li class="flex items-center gap-2" data-i18n="growthF2">✓ ৫,০০০ AI ড্রাফট ও রেসপন্স</li>
+              <li class="flex items-center gap-2" data-i18n="growthF3">✓ ১-ক্লিকে অর্ডার ক্যাপচার ও COD ইন্টিগ্রেশন</li>
+              <li class="flex items-center gap-2" data-i18n="growthF4">✓ ভিশন এআই প্রোডাক্ট ফটো ম্যাচিং</li>
+              <li class="flex items-center gap-2" data-i18n="growthF5">✓ মেটা বিজনেস স্যুট ক্রোম এক্সটেনশন</li>
+              <li class="flex items-center gap-2" data-i18n="growthF6">✓ ৩ জন টিম মেম্বার সিট</li>
+            </ul>
+          </div>
+          <button onclick="openApp()" class="w-full mt-8 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl text-sm transition shadow-lg shadow-blue-600/30" data-i18n="btnStartGrowth">
+            গ্রোথ প্ল্যান শুরু করুন 🚀
+          </button>
+        </div>
+
+        <!-- Pro / Agency Plan -->
+        <div class="bg-white dark:bg-slate-900 rounded-2xl p-8 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="text-lg font-bold text-slate-900 dark:text-white" data-i18n="proTitle">প্রো / এজেন্সি (Pro)</div>
+            <div class="text-slate-500 dark:text-slate-400 text-xs mt-1" data-i18n="proDesc">মাল্টি-পেইজ ও এজেন্সির ক্লায়েন্ট ম্যানেজমেন্ট</div>
+            <div class="my-6">
+              <span class="text-4xl font-black text-slate-900 dark:text-white">৳৫,৯৯০</span>
+              <span class="text-slate-500 dark:text-slate-400 text-xs font-semibold" data-i18n="perMonth">/ প্রতি মাস</span>
+            </div>
+            <ul class="space-y-3 text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium">
+              <li class="flex items-center gap-2" data-i18n="proF1">✓ আনলিমিটেড পেজ ও চ্যানেল</li>
+              <li class="flex items-center gap-2" data-i18n="proF2">✓ ১৫,০০০+ AI ড্রাফট</li>
+              <li class="flex items-center gap-2" data-i18n="proF3">✓ অ্যাসিস্টেড ও অটোনোমাস মোড কন্ট্রোল</li>
+              <li class="flex items-center gap-2" data-i18n="proF4">✓ সম্পূর্ণ কাস্টমাইজড প্রম্পট ও গার্ডরেল</li>
+              <li class="flex items-center gap-2" data-i18n="proF5">✓ প্রায়োরিটি সাপোর্ট ও ডেডিকেটেড একাউন্ট ম্যানেজার</li>
+            </ul>
+          </div>
+          <button onclick="openApp()" class="w-full mt-8 py-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 font-bold rounded-xl text-sm transition" data-i18n="btnBookAgency">
+            এজেন্সি ডেমো বুক করুন
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section id="faq" class="py-20 bg-white dark:bg-slate-900 transition">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-extrabold text-slate-900 dark:text-white" data-i18n="faqHeading">সচরাচর জিজ্ঞাসিত প্রশ্ন (FAQ)</h2>
+        <p class="text-slate-500 dark:text-slate-400 text-sm mt-2" data-i18n="faqSubheading">আপনার মনে কি এই প্রশ্নগুলো আসছে?</p>
+      </div>
+
+      <div class="space-y-4">
+        <details class="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-5 rounded-xl cursor-pointer">
+          <summary class="font-bold text-slate-800 dark:text-slate-200" data-i18n="faq1Q">AI কি নিজে নিজে ভুল মেসেজ পাঠিয়ে দিবে?</summary>
+          <p class="text-slate-600 dark:text-slate-400 text-sm mt-3 leading-relaxed" data-i18n="faq1A">
+            একদমই না! রিপ্লাইরাজার মূল দর্শনই হলো <strong>“হিউম্যান-ইন-দ্য-লুপ”</strong>। বাই-ডিফল্ট AI শুধু ড্রাফট তৈরি করে রাখবে। আপনি বা আপনার টিম মেম্বার মেসেজ দেখে ১-ক্লিক অ্যাপ্রুভ করলে তবেই কাস্টমারের কাছে যাবে। আপনি শতভাগ নিশ্চিত না হওয়া পর্যন্ত ফুল অটোমেশন অন করার দরকার নেই।
+          </p>
+        </details>
+
+        <details class="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-5 rounded-xl cursor-pointer">
+          <summary class="font-bold text-slate-800 dark:text-slate-200" data-i18n="faq2Q">কাস্টমার বাংলিশ বা আঞ্চলিক ভাষায় মেসেজ দিলে AI কি বুঝবে?</summary>
+          <p class="text-slate-600 dark:text-slate-400 text-sm mt-3 leading-relaxed" data-i18n="faq2A">
+            হ্যাঁ, ১০০%! আমাদের AI ইঞ্জিন বাংলাদেশি কাস্টমারদের লেখার ধরণ অনুযায়ী ট্রেইনড। যেমন: "ei panjabi ta hobe?", "dam koto", "delivery charge koto uttara te" — এ ধরণের সব মেসেজ নির্ভুলভাবে বুঝতে পারে এবং প্রফেশনাল ও বিনয়ী বাংলায় উত্তর সাজায়।
+          </p>
+        </details>
+
+        <details class="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-5 rounded-xl cursor-pointer">
+          <summary class="font-bold text-slate-800 dark:text-slate-200" data-i18n="faq3Q">অর্ডার কীভাবে ক্যাপচার হয়?</summary>
+          <p class="text-slate-600 dark:text-slate-400 text-sm mt-3 leading-relaxed" data-i18n="faq3A">
+            কাস্টমার চ্যাটে যখন মোবাইল নম্বর ও ঠিকানা দেয়, AI নিজে থেকেই তা শনাক্ত করে একটি অর্ডার কার্ড সাজিয়ে দেয়। মার্চেন্ট ড্যাশবোর্ড বা ক্রোম এক্সটেনশন থেকে ১-ক্লিকে নিশ্চিত অর্ডার তৈরি করে কাস্টমারকে সামারি এবং ক্যাশ অন ডেলিভারি নিশ্চিতকরণ মেসেজ পাঠাতে পারেন।
+          </p>
+        </details>
+
+        <details class="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-5 rounded-xl cursor-pointer">
+          <summary class="font-bold text-slate-800 dark:text-slate-200" data-i18n="faq4Q">আমার ফেসবুক পেজ বা কাস্টমারের ডেটা কি নিরাপদ?</summary>
+          <p class="text-slate-600 dark:text-slate-400 text-sm mt-3 leading-relaxed" data-i18n="faq4A">
+            আমরা অফিশিয়াল মেটা গ্রাফ এপিআই ও এন্ড-টু-এন্ড এনক্রিপশন ব্যবহার করি। আপনার কাস্টমারের ডেটা সম্পূর্ণ আপনার মালিকানাধীন। আমরা কোনো বিজ্ঞাপন কোম্পানি বা তৃতীয় পক্ষের কাছে ডেটা বিক্রি করি না এবং যেকোনো সময় আপনি আপনার ডেটা সম্পূর্ণ মুছে ফেলতে পারবেন।
+          </p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 text-slate-400 py-12 border-t border-slate-800 text-xs sm:text-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+      <div class="flex items-center gap-3">
+        <img src="/logo.png" alt="ReplyRaja" class="h-10 w-10 object-contain rounded-xl bg-white p-0.5" />
+        <div>
+          <span class="font-bold text-white text-base">ReplyRaja</span>
+          <span class="block text-slate-500 text-xs">AI that turns customer messages into orders.</span>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap justify-center gap-6 font-medium text-slate-400">
+        <a href="#features" class="hover:text-white" data-i18n="navFeatures">ফিচারসমূহ</a>
+        <a href="#pricing" class="hover:text-white" data-i18n="navPricing">প্রাইসিং</a>
+        <a href="#faq" class="hover:text-white" data-i18n="navFaq">এফএকিউ</a>
+        <a href="/app.html" class="hover:text-white" data-i18n="btnDashboard">মার্চেন্ট ড্যাশবোর্ড</a>
+      </div>
+
+      <div class="text-slate-500 text-xs">
+        © 2026 ReplyRaja. All rights reserved. Made for Bangladesh.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Internationalization (BN / EN) Dictionary -->
+  <script>
+    const translations = {
+      bn: {
+        announcement: "⚡ রিপ্লাইরাজা ১.০ লাইভ: বাংলা ও বাংলিশে কাস্টমারের মেসেজকে সরাসরি অর্ডারে পরিণত করুন!",
+        liveDemoLink: "লাইভ ডেমো দেখুন →",
+        logoSub: "রিপ্লাইরাজা AI",
+        navFeatures: "ফিচারসমূহ",
+        navDemo: "লাইভ ডেমো",
+        navChannels: "চ্যানেল",
+        navPricing: "প্রাইসিং",
+        navFaq: "সচরাচর প্রশ্ন",
+        btnDashboard: "ড্যাশবোর্ড খুলুন",
+        heroBadge: "বাংলাদেশি ফেসবুক পেজ ও অনলাইন শপগুলোর জন্য তৈরি",
+        heroHeadline: "কাস্টমারের মেসেজ আর মিস হবে না—<br class='hidden sm:inline'/><span class='text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600'>AI রিপ্লাই দেবে ও সরাসরি অর্ডার নিবে!</span>",
+        heroSubhead: "Facebook Messenger, WhatsApp, Instagram ও ওয়েবসাইটের শত শত মেসেজের উত্তর দিন খাঁটি বাংলায়। ছবি চিনে প্রোডাক্ট ম্যাচিং, ক্যাশ অন ডেলিভারি (COD) অর্ডার ক্যাপচার এবং মানুষের ১০০% নিয়ন্ত্রণ।",
+        btnTrial: "১৪ দিনের ফ্রি ট্রায়াল শুরু করুন",
+        btnSeeDemo: "ইন্টারেক্টিভ ডেমো দেখুন",
+        metric1Val: "১.৮ মিনিট",
+        metric1Desc: "গড় রিপ্লাই সময় (আগে ২৮ মিনিট)",
+        metric2Val: "+৩৪%",
+        metric2Desc: "অর্ডার কনভার্সন বৃদ্ধি",
+        metric3Val: "১০০%",
+        metric3Desc: "হিউম্যান-ইন-দ্য-লুপ কন্ট্রোল",
+        metric4Val: "২৪/৭",
+        metric4Desc: "রাতভর ড্রাফট ও সেলস সাপোর্ট",
+        demoBadge: "Live Simulator",
+        demoTitle: "নিজে পরীক্ষা করে দেখুন AI কীভাবে কাজ করে",
+        demoSubtitle: "নিচের মেসেজ অপশনগুলোতে ক্লিক করুন অথবা নিজে প্রশ্ন লিখে টেস্ট করুন:",
+        simCustomerName: "রহিম উদ্দিন (ধানমন্ডি)",
+        simChannel: "চ্যানেল: ফেইসবুক",
+        simCustLabel: "কাস্টমার",
+        simDraftTitle: "AI সাজেস্টেড ড্রাফট (কনফিডেন্স: ৯৬%)",
+        simPendingApproval: "অনুমোদন অপেক্ষমাণ",
+        btnApproveSend: "✓ অনুমোদন ও মেসেজ পাঠান",
+        btnEditDraft: "✏️ এডিট করুন",
+        promptSelectorLabel: "টেস্ট প্রম্পট সিলেক্ট করুন:",
+        btnDeliveryPrompt: "🚚 ডেলিভারি ও COD",
+        btnPaymentPrompt: "💳 শাড়ি ও বিকাশ পেমেন্ট",
+        btnComplaintPrompt: "🚨 কমপ্লেইন ও অটো এস্কেলেশন",
+        catalogTitle: "AI ক্যাটালগ ও অর্ডার কার্ড",
+        catalogPrdTitle: "প্রিমিয়াম লিনেন পাঞ্জাবি (রয়্যাল নেভি)",
+        catalogPrdStock: "SKU: PNJ-NAVY-01 • স্টক: ৪৫ পিস",
+        orderPrepHeader: "অর্ডার তৈরির জন্য প্রস্তুত তথ্য:",
+        orderAreaLabel: "ডেলিভারি এরিয়া:",
+        orderPaymentLabel: "পেমেন্ট মেথড:",
+        orderTotalLabel: "মোট প্রদেয়:",
+        btnCreateOrder: "🛒 ১-ক্লিকে নিশ্চিত অর্ডার তৈরি করুন",
+        humanControlNotice: "🔒 মার্চেন্ট ছাড়া AI নিজে কোনো অর্ডার ফাইনাল করে না",
+        featuresHeading: "অনলাইন বিজনেসের সব জটিলতা সহজে সামলানোর পূর্ণাঙ্গ স্যুট",
+        featuresSubheading: "শুধু চ্যাটবট নয়—রিপ্লাইরাজা হলো আপনার পেইজের একজন ফুল-টাইম ডিজিটাল সেলস ম্যানেজার।",
+        feat1Title: "অমনিচ্যানেল ইউনিফাইড ইনবক্স",
+        feat1Desc: "ফেসবুক পেইজ, ইনস্টাগ্রাম, হোয়াটসঅ্যাপ বিজনেস এবং ওয়েবসাইটের সব কাস্টমার মেসেজ একই ড্যাশবোর্ডে। টিম মেম্বারদের মাঝে চ্যাট অ্যাসাইন এবং SLA টাইমার।",
+        feat2Title: "খাঁটি বাংলা ও বাংলিশে উত্তর",
+        feat2Desc: "কাস্টমার যে ভাষায়ই লিখুক না কেন—বাংলা, রোমানাইজড বাংলিশ কিংবা ইংরেজি—রিপ্লাইরাজা সঠিক গ্রামার ও বিনয়ী টোনে উত্তর প্রস্তুত করে।",
+        feat3Title: "ছবি চিনে ক্যাটালগ প্রোডাক্ট ম্যাচ",
+        feat3Desc: "কাস্টমার পণ্যের স্ক্রিনশট বা ছবি পাঠালে ভিশন এআই আপনার ক্যাটালগের সাথে মিলিয়ে দাম, সাইজ ও স্টক স্ট্যাটাস স্বয়ংক্রিয়ভাবে শনাক্ত করে।",
+        feat4Title: "অর্ডার ও কুরিয়ার ট্র্যাকিং",
+        feat4Desc: "চ্যাট থেকেই নাম, ফোন, ঠিকানা ও আইটেম নিয়ে সরাসরি COD বা বিকাশ অর্ডার তৈরি। রেডএক্স, স্টিডফাস্ট ও পাঠাও ট্র্যাকিং ইন্টিগ্রেশন।",
+        feat5Title: "মানুষের নিয়ন্ত্রণ ও অটো এস্কেলেশন",
+        feat5Desc: "বাই-ডিফল্ট AI ড্রাফট তৈরি করবে, মার্চেন্ট অ্যাপ্রুভ করলে তবেই যাবে। কোনো রিফান্ড, অভিযোগ বা অস্বাভাবিক বার্গেনিং থাকলে সাথে সাথে মানুষের কাছে হ্যান্ডওভার।",
+        feat6Title: "মেটা বিজনেস স্যুট এক্সটেনশন",
+        feat6Desc: "আপনার পরিচিত ফেসবুক ইনবক্সেই রিপ্লাইরাজার স্মার্ট সাইডবার দেখা যাবে। ট্যাব সুইচ ছাড়াই ১-ক্লিকে ড্রাফট ইনসার্ট ও কাস্টমার হিস্ট্রি চেক।",
+        channelsHeading: "যেসব চ্যানেলের সাথে অফিশিয়ালি সংযুক্ত",
+        channelsSubheading: "অফিশিয়াল ক্লাউড এপিআই ব্যবহারের কারণে একাউন্ট ব্লক বা পলিসি ভায়োলেশনের ঝুঁকি নেই",
+        pricingHeading: "স্বচ্ছ ও সাশ্রয়ী সাবস্ক্রিপশন প্ল্যান",
+        pricingSubheading: "১৪ দিনের ফ্রি ট্রায়াল, কোনো ক্রেডিট কার্ড লাগবে না। বিকাশ বা নগদে সহজে পেমেন্ট করুন।",
+        starterTitle: "স্টার্টার (Starter)",
+        starterDesc: "নতুন ফেসবুক পেজ ও স্মল সেলারদের জন্য",
+        perMonth: "/ প্রতি মাস",
+        starterF1: "✓ ১টি ফেসবুক পেজ কানেকশন",
+        starterF2: "✓ ১,০০০ AI রিপ্লাই ড্রাফট",
+        starterF3: "✓ বাংলা ও বাংলিশ ল্যাঙ্গুয়েজ মডেল",
+        starterF4: "✓ হিউম্যান অ্যাপ্রুভাল ইনবক্স",
+        starterF5: "✓ বেসিক ক্যাটালগ ও FAQ RAG",
+        btnStartTrial: "১৪ দিনের ট্রায়াল শুরু করুন",
+        popularTag: "সবচেয়ে জনপ্রিয় (Best Value)",
+        growthTitle: "গ্রোথ (Growth)",
+        growthDesc: "সক্রিয় শপ ও দ্রুত বর্ধনশীল ব্র্যান্ডের জন্য",
+        growthF1: "✓ ফেসবুক + হোয়াটসঅ্যাপ + ইনস্টাগ্রাম + ওয়েবসাইট",
+        growthF2: "✓ ৫,০০০ AI ড্রাফট ও রেসপন্স",
+        growthF3: "✓ ১-ক্লিকে অর্ডার ক্যাপচার ও COD ইন্টিগ্রেশন",
+        growthF4: "✓ ভিশন এআই প্রোডাক্ট ফটো ম্যাচিং",
+        growthF5: "✓ মেটা বিজনেস স্যুট ক্রোম এক্সটেনশন",
+        growthF6: "✓ ৩ জন টিম মেম্বার সিট",
+        btnStartGrowth: "গ্রোথ প্ল্যান শুরু করুন 🚀",
+        proTitle: "প্রো / এজেন্সি (Pro)",
+        proDesc: "মাল্টি-পেইজ ও এজেন্সির ক্লায়েন্ট ম্যানেজমেন্ট",
+        proF1: "✓ আনলিমিটেড পেজ ও চ্যানেল",
+        proF2: "✓ ১৫,০০০+ AI ড্রাফট",
+        proF3: "✓ অ্যাসিস্টেড ও অটোনোমাস মোড কন্ট্রোল",
+        proF4: "✓ সম্পূর্ণ কাস্টমাইজড প্রম্পট ও গার্ডরেল",
+        proF5: "✓ প্রায়োরিটি সাপোর্ট ও ডেডিকেটেড একাউন্ট ম্যানেজার",
+        btnBookAgency: "এজেন্সি ডেমো বুক করুন",
+        faqHeading: "সচরাচর জিজ্ঞাসিত প্রশ্ন (FAQ)",
+        faqSubheading: "আপনার মনে কি এই প্রশ্নগুলো আসছে?",
+        faq1Q: "AI কি নিজে নিজে ভুল মেসেজ পাঠিয়ে দিবে?",
+        faq1A: "একদমই না! রিপ্লাইরাজার মূল দর্শনই হলো <strong>“হিউম্যান-ইন-দ্য-লুপ”</strong>। বাই-ডিফল্ট AI শুধু ড্রাফট তৈরি করে রাখবে। আপনি বা আপনার টিম মেম্বার মেসেজ দেখে ১-ক্লিক অ্যাপ্রুভ করলে তবেই কাস্টমারের কাছে যাবে। আপনি শতভাগ নিশ্চিত না হওয়া পর্যন্ত ফুল অটোমেশন অন করার দরকার নেই।",
+        faq2Q: "কাস্টমার বাংলিশ বা আঞ্চলিক ভাষায় মেসেজ দিলে AI কি বুঝবে?",
+        faq2A: "হ্যাঁ, ১০০%! আমাদের AI ইঞ্জিন বাংলাদেশি কাস্টমারদের লেখার ধরণ অনুযায়ী ট্রেইনড। যেমন: 'ei panjabi ta hobe?', 'dam koto', 'delivery charge koto uttara te' — এ ধরণের সব মেসেজ নির্ভুলভাবে বুঝতে পারে এবং প্রফেশনাল ও বিনয়ী বাংলায় উত্তর সাজায়।",
+        faq3Q: "অর্ডার কীভাবে ক্যাপচার হয়?",
+        faq3A: "কাস্টমার চ্যাটে যখন মোবাইল নম্বর ও ঠিকানা দেয়, AI নিজে থেকেই তা শনাক্ত করে একটি অর্ডার কার্ড সাজিয়ে দেয়। মার্চেন্ট ড্যাশবোর্ড বা ক্রোম এক্সটেনশন থেকে ১-ক্লিকে নিশ্চিত অর্ডার তৈরি করে কাস্টমারকে সামারি এবং ক্যাশ অন ডেলিভারি নিশ্চিতকরণ মেসেজ পাঠাতে পারেন।",
+        faq4Q: "আমার ফেসবুক পেজ বা কাস্টমারের ডেটা কি নিরাপদ?",
+        faq4A: "আমরা অফিশিয়াল মেটা গ্রাফ এপিআই ও এন্ড-টু-এন্ড এনক্রিপশন ব্যবহার করি। আপনার কাস্টমারের ডেটা সম্পূর্ণ আপনার মালিকানাধীন। আমরা কোনো বিজ্ঞাপন কোম্পানি বা তৃতীয় পক্ষের কাছে ডেটা বিক্রি করি না এবং যেকোনো সময় আপনি আপনার ডেটা সম্পূর্ণ মুছে ফেলতে পারবেন।"
+      },
+      en: {
+        announcement: "⚡ ReplyRaja 1.0 is live: Turn customer messages into confirmed orders with Bengali-first AI!",
+        liveDemoLink: "See Live Demo →",
+        logoSub: "ReplyRaja AI",
+        navFeatures: "Features",
+        navDemo: "Live Demo",
+        navChannels: "Channels",
+        navPricing: "Pricing",
+        navFaq: "FAQ",
+        btnDashboard: "Open Dashboard",
+        heroBadge: "Built for Bangladeshi Facebook & E-Commerce Sellers",
+        heroHeadline: "Never Miss Another Sale—<br class='hidden sm:inline'/><span class='text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600'>AI Replies in Bangla & Captures Orders!</span>",
+        heroSubhead: "Respond to hundreds of messages across Facebook Messenger, WhatsApp, Instagram, and your website in natural Bengali and Banglish. Vision AI catalog matching, Cash on Delivery order capture, and 100% human-in-the-loop control.",
+        btnTrial: "Start 14-Day Free Trial",
+        btnSeeDemo: "Explore Interactive Demo",
+        metric1Val: "1.8 mins",
+        metric1Desc: "Average response time (vs 28 mins before)",
+        metric2Val: "+34%",
+        metric2Desc: "Order conversion increase",
+        metric3Val: "100%",
+        metric3Desc: "Human-in-the-loop control",
+        metric4Val: "24/7",
+        metric4Desc: "Overnight sales & draft support",
+        demoBadge: "Live Simulator",
+        demoTitle: "Experience How the AI Works in Real Time",
+        demoSubtitle: "Click on any prompt below or type your own question to test:",
+        simCustomerName: "Rahim Uddin (Dhanmondi)",
+        simChannel: "Channel: Facebook",
+        simCustLabel: "Customer",
+        simDraftTitle: "AI Suggested Draft (Confidence: 96%)",
+        simPendingApproval: "Pending Approval",
+        btnApproveSend: "✓ Approve & Send Message",
+        btnEditDraft: "✏️ Edit Draft",
+        promptSelectorLabel: "Select a test customer prompt:",
+        btnDeliveryPrompt: "🚚 Delivery & COD Rates",
+        btnPaymentPrompt: "💳 Saree Price & bKash",
+        btnComplaintPrompt: "🚨 Complaint & Auto-Escalation",
+        catalogTitle: "AI Catalog & Order Context",
+        catalogPrdTitle: "Premium Linen Panjabi (Royal Navy)",
+        catalogPrdStock: "SKU: PNJ-NAVY-01 • Stock: 45 pcs",
+        orderPrepHeader: "Auto-extracted Order Details:",
+        orderAreaLabel: "Delivery Area:",
+        orderPaymentLabel: "Payment Method:",
+        orderTotalLabel: "Total Payable:",
+        btnCreateOrder: "🛒 1-Click Order Confirmation",
+        humanControlNotice: "🔒 AI never finalizes an order without merchant approval",
+        featuresHeading: "A Complete Commerce Suite for Online Sellers",
+        featuresSubheading: "Not just a chatbot—ReplyRaja is your full-time digital sales and order manager.",
+        feat1Title: "Omnichannel Unified Inbox",
+        feat1Desc: "Manage Facebook Pages, Instagram Direct, WhatsApp Business, and Website live chat in one inbox with SLA timers and agent assignments.",
+        feat2Title: "Bangla & Banglish First",
+        feat2Desc: "Whether customers write in native Bangla, romanized Banglish, or English, ReplyRaja crafts polite, grammatically accurate sales drafts.",
+        feat3Title: "Vision AI Catalog Matching",
+        feat3Desc: "Customers can upload screenshots or product photos; our vision engine instantly detects the exact catalog item, price, and stock status.",
+        feat4Title: "Order & Courier Tracking",
+        feat4Desc: "Capture phone numbers, addresses, and products right from the chat into Cash on Delivery orders with RedX & Steadfast tracking.",
+        feat5Title: "Human Control & Escalation",
+        feat5Desc: "By default, AI drafts messages for human approval. Any complaints, refund mentions, or disputes are escalated instantly to human agents.",
+        feat6Title: "Meta Business Suite Extension",
+        feat6Desc: "A companion Chrome extension adds customer history, AI draft generation, and order context directly inside Meta Business Suite.",
+        channelsHeading: "Official Channel Integrations",
+        channelsSubheading: "Built with official Meta Graph & WhatsApp Cloud APIs so your page is always secure and compliant.",
+        pricingHeading: "Transparent & Affordable Pricing",
+        pricingSubheading: "14-day free trial. No credit card required. Easy payments via bKash, Nagad, or bank transfer.",
+        starterTitle: "Starter",
+        starterDesc: "For new Facebook pages & small shops",
+        perMonth: "/ per month",
+        starterF1: "✓ 1 Facebook Page Connection",
+        starterF2: "✓ 1,000 AI Reply Drafts",
+        starterF3: "✓ Bengali & Banglish Language Models",
+        starterF4: "✓ Human Approval Inbox",
+        starterF5: "✓ Basic Catalog & FAQ RAG",
+        btnStartTrial: "Start 14-Day Free Trial",
+        popularTag: "Most Popular (Best Value)",
+        growthTitle: "Growth",
+        growthDesc: "For active shops & scaling brands",
+        growthF1: "✓ Facebook + WhatsApp + Instagram + Website",
+        growthF2: "✓ 5,000 AI Drafts & Responses",
+        growthF3: "✓ 1-Click Order Capture & COD Flow",
+        growthF4: "✓ Vision AI Product Photo Matching",
+        growthF5: "✓ Meta Business Suite Chrome Extension",
+        growthF6: "✓ 3 Team Member Seats",
+        btnStartGrowth: "Get Started with Growth 🚀",
+        proTitle: "Pro / Agency",
+        proDesc: "Multi-page & agency client management",
+        proF1: "✓ Unlimited Pages & Channels",
+        proF2: "✓ 15,000+ AI Drafts",
+        proF3: "✓ Assisted & Autonomous Mode Controls",
+        proF4: "✓ Custom Prompts & Safety Guardrails",
+        proF5: "✓ Priority Support & Dedicated Manager",
+        btnBookAgency: "Book Agency Demo",
+        faqHeading: "Frequently Asked Questions",
+        faqSubheading: "Common questions answered clearly",
+        faq1Q: "Will the AI send incorrect messages automatically?",
+        faq1A: "Never! ReplyRaja is strictly <strong>Human-in-the-loop</strong> by default. AI prepares intelligent drafts for you or your team to review, edit, and approve in 1 click before anything is sent.",
+        faq2Q: "Does the AI understand Banglish or regional phrasing?",
+        faq2A: "Yes, 100%! The AI is trained specifically on Bangladeshi conversational patterns like 'ei panjabi ta hobe?', 'dam koto', 'delivery charge koto uttara te', accurately replying in polite Bengali.",
+        faq3Q: "How does order capture work?",
+        faq3A: "When a customer provides their phone number and delivery address in chat, the AI structures it into an order card. Merchants can confirm it with 1 click and dispatch with RedX/Steadfast.",
+        faq4Q: "Is my customer and page data secure?",
+        faq4A: "We use official Meta APIs and AES-256 encryption. Your customer data belongs entirely to your business—we never sell data or share it with third parties."
+      }
+    };
+
+    let currentLang = localStorage.getItem('replyraja_lang') || 'bn';
+    let currentTheme = localStorage.getItem('replyraja_theme') || 'light';
+
+    function applyLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('replyraja_lang', lang);
+      document.documentElement.lang = lang;
+      document.getElementById('lang-text').innerText = lang === 'bn' ? 'বাংলা' : 'EN';
+
+      const dict = translations[lang];
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key]) {
+          el.innerHTML = dict[key];
+        }
+      });
+    }
+
+    function toggleLang() {
+      applyLanguage(currentLang === 'bn' ? 'en' : 'bn');
+    }
+
+    function applyTheme(theme) {
+      currentTheme = theme;
+      localStorage.setItem('replyraja_theme', theme);
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+        document.getElementById('theme-icon').innerText = '☀️';
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.getElementById('theme-icon').innerText = '🌙';
+      }
+    }
+
+    function toggleTheme() {
+      applyTheme(currentTheme === 'light' ? 'dark' : 'light');
+    }
+
+    // Initialize stored preferences
+    applyLanguage(currentLang);
+    applyTheme(currentTheme);
+
+    function openApp() {
+      window.location.href = '/app.html';
+    }
+
+    function triggerSimPrompt(promptText) {
+      const thread = document.getElementById('sim-thread');
+      const draftCard = document.getElementById('sim-ai-draft-card');
+      const draftText = document.getElementById('sim-draft-text');
+
+      const userBubble = document.createElement('div');
+      userBubble.className = 'flex justify-start';
+      userBubble.innerHTML = `
+        <div class="bg-slate-800 text-slate-200 text-sm p-3.5 rounded-2xl rounded-tl-sm max-w-[85%] border border-slate-700">
+          <div class="text-xs text-slate-400 mb-1 font-semibold">${currentLang === 'bn' ? 'কাস্টমার' : 'Customer'}</div>
+          ${promptText}
+        </div>
+      `;
+      thread.appendChild(userBubble);
+      thread.scrollTop = thread.scrollHeight;
+
+      if (promptText.includes('পুলিশ') || promptText.includes('রিফান্ড') || promptText.includes('ছেঁড়া') || promptText.includes('police') || promptText.includes('refund')) {
+        draftCard.className = 'bg-red-950/60 border border-red-700/60 rounded-xl p-4 my-3 text-sm';
+        draftCard.innerHTML = `
+          <div class="flex items-center justify-between text-xs text-red-300 mb-2 font-semibold">
+            <div class="flex items-center gap-1.5">
+              <span class="text-base">🚨</span>
+              <span>${currentLang === 'bn' ? 'অটো এস্কেলেশন ট্রিগারড! (অভিযোগ সনাক্ত)' : 'Auto-Escalation Triggered! (Complaint Detected)'}</span>
+            </div>
+            <span class="bg-red-600/40 text-red-200 px-2 py-0.5 rounded text-[11px]">${currentLang === 'bn' ? 'মানুষের মনোযোগ প্রয়োজন' : 'Human Attention Required'}</span>
+          </div>
+          <div class="text-slate-100 text-xs leading-relaxed mb-3 bg-slate-900/80 p-3 rounded-lg border border-red-800/60">
+            ${currentLang === 'bn' ? 'কাস্টমার পণ্যের ক্ষতি ও রিফান্ডের কথা উল্লেখ করেছেন। AI গার্ডরেল অনুযায়ী অটো-রিপ্লাই স্থগিত করা হয়েছে যাতে মার্চেন্ট সরাসরি সমাধান দিতে পারেন।' : 'Customer mentioned damaged item and refund. Per safety guardrails, auto-replies are paused for human agent resolution.'}
+          </div>
+          <button onclick="alert('${currentLang === 'bn' ? 'চ্যাটটি সরাসরি মানব এজেন্টের কাছে হ্যান্ডওভার করা হয়েছে।' : 'Conversation handed over to human support agent.'}')" class="px-4 py-2 bg-red-600 hover:bg-red-500 text-white font-bold rounded-lg text-xs transition">
+            👤 ${currentLang === 'bn' ? 'ম্যানুয়াল টেকওভার করুন' : 'Manual Takeover'}
+          </button>
+        `;
+      } else if (promptText.includes('বিকাশ') || promptText.includes('bKash')) {
+        draftText.innerText = currentLang === 'bn'
+          ? 'ধন্যবাদ! ঐতিহ্যবাহী তাঁতের সুতি শাড়িটির মূল্য ১৪৫০ টাকা এবং ডেলিভারি চার্জ ঢাকার বাইরে ১৩০ টাকা (মোট ১৫৮০ টাকা)। আমাদের বিকাশ মার্চেন্ট নম্বর: 01711000111। পেমেন্ট সম্পন্ন করে লাস্ট ৪ ডিজিট জানিয়ে দিলে আমরা পার্সেল রেডি করে দিবো!'
+          : 'Thank you! The Traditional Handloom Cotton Saree is ৳1450, and delivery charge outside Dhaka is ৳130 (Total: ৳1580). Our bKash merchant number is 01711000111. Please share the last 4 digits after payment!';
+      } else {
+        draftText.innerText = currentLang === 'bn'
+          ? 'আমাদের ডেলিভারি চার্জ ঢাকার ভিতরে মাত্র ৭০ টাকা (২৪-৪৮ ঘণ্টায় ডেলিভারি), এবং ঢাকার বাইরে ১৩০ টাকা (৩-৫ কর্মদিবস)। সারাদেশে ক্যাশ অন ডেলিভারি (COD) সুবিধা রয়েছে—পণ্য হাতে পেয়ে দেখে টাকা দিতে পারবেন!'
+          : 'Delivery charge is ৳70 inside Dhaka (24-48 hours) and ৳130 outside Dhaka (3-5 days). Cash on Delivery (COD) is available all over Bangladesh—inspect product before paying!';
+      }
+      thread.appendChild(draftCard);
+      thread.scrollTop = thread.scrollHeight;
+    }
+
+    function approveSimDraft() {
+      const draftCard = document.getElementById('sim-ai-draft-card');
+      const draftContent = document.getElementById('sim-draft-text').innerText;
+      const thread = document.getElementById('sim-thread');
+
+      const approvedMsg = document.createElement('div');
+      approvedMsg.className = 'flex justify-end';
+      approvedMsg.innerHTML = `
+        <div class="bg-blue-600 text-white text-sm p-3.5 rounded-2xl rounded-tr-sm max-w-[85%] shadow-md">
+          <div class="text-[11px] text-blue-200 mb-1 font-semibold">${currentLang === 'bn' ? 'এজেন্ট (AI ড্রাফট অনুমোদিত) ✓' : 'Agent (AI Draft Approved) ✓'}</div>
+          ${draftContent}
+        </div>
+      `;
+      thread.replaceChild(approvedMsg, draftCard);
+      thread.scrollTop = thread.scrollHeight;
+    }
+
+    function editSimDraft() {
+      const newText = prompt(currentLang === 'bn' ? 'ড্রাফট এডিট করুন:' : 'Edit AI Draft:', document.getElementById('sim-draft-text').innerText);
+      if (newText) {
+        document.getElementById('sim-draft-text').innerText = newText;
+      }
+    }
+
+    function openOrderModalSim() {
+      alert(currentLang === 'bn' 
+        ? 'সফলভাবে অর্ডার তৈরি হয়েছে! #ORD-1002 (প্রিমিয়াম লিনেন পাঞ্জাবি, মোট: ৳১,৯২০, পেমেন্ট: ক্যাশ অন ডেলিভারি)। রেডএক্স ট্র্যাকিং আইডি জেনারেট হয়েছে।' 
+        : 'Order created successfully! #ORD-1002 (Premium Linen Panjabi, Total: ৳1,920, Payment: Cash on Delivery). RedX tracking generated.');
+    }
+  </script>
+
+  <!-- Embedded Live Widget script on landing page itself -->
+  <script src="/widget.js"></script>
+
+</body>
+</html>
